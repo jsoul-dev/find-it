@@ -21,6 +21,7 @@ import { addIcons } from 'ionicons';
 import { locate } from 'ionicons/icons';
 import * as L from 'leaflet';
 import { Geolocation } from '@capacitor/geolocation';
+import { Haptics, NotificationType } from '@capacitor/haptics';
 import { ItemService } from '../services/item';
 
 @Component({
@@ -104,12 +105,18 @@ export class PostItemPage implements AfterViewInit {
       this.formError.set('');
     } catch {
       this.formError.set('Could not access current location. Please check GPS permissions or tap the map.');
+      try {
+        await Haptics.notification({ type: NotificationType.Error });
+      } catch {}
     }
   }
 
-  submit(): void {
+  async submit(): Promise<void> {
     if (!this.name.trim() || !this.contact.trim() || this.lat() === null || this.lng() === null) {
       this.formError.set('Please fill in the item name, contact, and pick a location on the map.');
+      try {
+        await Haptics.notification({ type: NotificationType.Warning });
+      } catch {}
       return;
     }
 
@@ -127,15 +134,21 @@ export class PostItemPage implements AfterViewInit {
         status: 'Open',
       })
       .subscribe({
-        next: () => {
+        next: async () => {
+          try {
+            await Haptics.notification({ type: NotificationType.Success });
+          } catch {}
           this.submitting.set(false);
           this.itemService.fetchItems();
           this.router.navigate(['/home']);
         },
-        error: (err) => {
+        error: async (err) => {
           console.error('POST Error:', err);
           this.submitting.set(false);
           this.formError.set('Could not post item to server. Please try again.');
+          try {
+            await Haptics.notification({ type: NotificationType.Error });
+          } catch {}
         },
       });
   }

@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Haptics, NotificationType } from '@capacitor/haptics';
 import { environment } from '../../environments/environment';
 import { Item, NewItem } from '../models/item';
 
@@ -23,10 +24,13 @@ export class ItemService {
         this.items.set([...res].reverse());
         this.loading.set(false);
       },
-      error: (err) => {
+      error: async (err) => {
         console.error('GET Error:', err);
         this.error.set('Could not load items. Check your internet connection.');
         this.loading.set(false);
+        try {
+          await Haptics.notification({ type: NotificationType.Error });
+        } catch {}
       },
     });
   }
