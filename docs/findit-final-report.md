@@ -10,13 +10,13 @@
 ### Title
 **FindIt: Campus Lost & Found Mobile Application**
 
-### Group Members and Assigned Roles
-| Member Name | Student ID | Assigned Project Role | Specific Contributions |
-|---|---|---|---|
-| `[Student 1 Name]` | `[Student ID]` | Project Lead & UI/UX Specialist | Project coordination, UI layout, component tree, Angular signals & filter architecture |
-| `[Student 2 Name]` | `[Student ID]` | Mobile Capabilities Developer | Capacitor Geolocation, Leaflet map integration, GPS pinpointing & Haptics |
-| `[Student 3 Name]` | `[Student ID]` | Native Device & Hardware Engineer | Capacitor Camera capture, local-first image persistence, Android permissions & APK builds |
-| `[Student 4 Name]` | `[Student ID]` | Backend Integration & QA Specialist | MockAPI schema setup, HttpClient integration, Playwright E2E automation & report documentation |
+### Group Members
+| Member Name | Student ID |
+|---|---|
+| `[Student 1 Name]` | `[Student ID]` |
+| `[Student 2 Name]` | `[Student ID]` |
+| `[Student 3 Name]` | `[Student ID]` |
+| `[Student 4 Name]` | `[Student ID]` |
 
 ---
 
