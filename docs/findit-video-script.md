@@ -129,14 +129,11 @@
 > 2. **Automated End-to-End (E2E) Testing:** In addition to physical phone testing, we configured automated E2E tests using **Playwright**. Our test suite simulates mobile Chrome on a Pixel 7 viewport, validating the home page rendering, segment filters, Leaflet map mounting, and report form fields. All 3 automated test suites execute and pass in under 10 seconds.
 >
 > ### Limitations & Future Improvements (CO4)
-> We also evaluated realistic limitations and planned future enhancements:
-> - Importantly, while *Photo Attachment* was originally suggested in the course syllabus as a future improvement, our team proactively implemented native Camera capture directly into this working prototype!
-> - For future production releases, we propose:
->   1. Adding a **Confirmation Alert Dialog** before resolving items to prevent accidental taps.
->   2. Adding **Push Notifications** via Capacitor Push to alert students when a matching item is posted.
->   3. Upgrading our local photo cache to **Dedicated Cloud Object Storage** (Firebase/S3) for full-resolution photos.
->   4. Implementing **Offline Map Tile Caching** for connectivity-free browsing.
->   5. Securing the backend with **Student Google SSO Authentication** restricted to `@neust.edu.ph` accounts.
+> We also identified realistic limitations and future enhancements:
+> 1. **Authentication:** Currently, MockAPI is public. In a production rollout, we recommend integrating Firebase Authentication restricted to official `@neust.edu.ph` institutional student emails.
+> 2. **Dedicated Cloud Storage:** Storing high-resolution photos in Firebase Cloud Storage or AWS S3 instead of base64 payloads.
+> 3. **Push Notifications:** Integrating Capacitor Push Notifications to alert students whenever an item matching their lost description is reported found.
+> 4. **Offline Map Caching:** Pre-caching campus vector tiles so the map functions even when mobile data is offline.
 >
 > ### AI Usage Disclosure
 > In compliance with university guidelines, we transparently disclose our AI usage:
