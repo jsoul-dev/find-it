@@ -1,7 +1,7 @@
 # IT-WS07 Final Case Study Report: FindIt
 **Course:** IT-WS07 Mobile Application Technology  
 **Program & Campus:** College of Information and Communications Technology (CICT), Nueva Ecija University of Science and Technology (NEUST)  
-**Project Repository & Google Drive Link:** `[Insert Group Repo / Drive Folder URL]`  
+**Project Repository & Google Drive Link:** [https://github.com/jsoul-dev/find-it](https://github.com/jsoul-dev/find-it) | `[Insert Google Drive Folder URL]`  
 
 ---
 
@@ -232,6 +232,13 @@ export class ItemService {
 | 8 | **Submit valid item with photo (POST)** | Success haptic vibrates; item added to API with local photo cache | Success haptic fired; routed to Home; new item appears with photo thumbnail | **Pass** |
 | 9 | **Open Item Detail page** | Details, attached photo, and focused Leaflet map marker display | Full photo, metadata, and map centered on exact coordinates loaded | **Pass** |
 | 10 | **Mark as Claimed (PUT)** | Status badge updates to "Claimed" and Claim button disappears | Status updated on cloud API and UI badge changed to Claimed immediately | **Pass** |
+
+### Automated End-to-End (E2E) Test Suite (Playwright)
+In addition to physical device verification, an automated Playwright test suite (`npm run test:e2e`) executes in a simulated mobile Chrome environment (`Pixel 7` viewport):
+- **Test 1:** Verifies Home screen header and all 4 segment buttons (`All`, `Lost`, `Found`, `Claimed`).
+- **Test 2:** Verifies the Leaflet campus map container (`#map`) mounts and renders.
+- **Test 3:** Verifies `/post-item` form cards, photo button, GPS locate trigger, and submit button.
+- **Execution Result:** 3/3 tests passing (9.1 seconds execution time).
 
 ### Limitations and Usability Issues
 1. **Unauthenticated Public API:** MockAPI.io endpoints are publicly writable. Any client knowing the URL can theoretically issue POST/PUT requests.
