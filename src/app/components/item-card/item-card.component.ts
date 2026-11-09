@@ -1,13 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, input, output } from '@angular/core';
+import {
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardSubtitle,
+  IonCardContent,
+  IonBadge,
+} from '@ionic/angular';
+import { Item } from '../../models/item';
 
 @Component({
   selector: 'app-item-card',
   templateUrl: './item-card.component.html',
   styleUrls: ['./item-card.component.scss'],
-  imports: [],
+  imports: [
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardSubtitle,
+    IonCardContent,
+    IonBadge,
+  ],
 })
-export class ItemCardComponent implements OnInit {
-  constructor() {}
+export class ItemCardComponent {
+  item = input.required<Item>();
+  open = output<string>();
 
-  ngOnInit() {}
+  onSelect(): void {
+    this.open.emit(this.item().id);
+  }
 }

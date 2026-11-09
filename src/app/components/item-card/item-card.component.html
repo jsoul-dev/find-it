@@ -1,1 +1,20 @@
-<p>item-card works!</p>
+<ion-card (click)="onSelect()" [button]="true">
+  <ion-card-header>
+    <div class="card-header-row">
+      <ion-card-title>{{ item().name }}</ion-card-title>
+      <ion-badge [color]="item().type === 'Lost' ? 'danger' : 'success'">
+        {{ item().type }}
+      </ion-badge>
+    </div>
+    <ion-card-subtitle>
+      Status:
+      <ion-badge [color]="item().status === 'Claimed' ? 'medium' : 'warning'">
+        {{ item().status }}
+      </ion-badge>
+    </ion-card-subtitle>
+  </ion-card-header>
+  <ion-card-content>
+    <p>{{ item().description }}</p>
+    <p><strong>Contact:</strong> {{ item().contact }}</p>
+  </ion-card-content>
+</ion-card>

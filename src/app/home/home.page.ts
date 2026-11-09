@@ -1,16 +1,14 @@
 import { Component, AfterViewInit, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
   IonTitle,
   IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonBadge,
 } from '@ionic/angular';
 import * as L from 'leaflet';
 import { ItemService } from '../services/item';
+import { ItemCardComponent } from '../components/item-card/item-card.component';
 
 @Component({
   selector: 'app-home',
@@ -21,14 +19,12 @@ import { ItemService } from '../services/item';
     IonToolbar,
     IonTitle,
     IonContent,
-    IonList,
-    IonItem,
-    IonLabel,
-    IonBadge,
+    ItemCardComponent,
   ],
 })
 export class HomePage implements AfterViewInit {
   private itemService = inject(ItemService);
+  private router = inject(Router);
   private map!: L.Map;
 
   items = this.itemService.items;
@@ -44,5 +40,9 @@ export class HomePage implements AfterViewInit {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
     setTimeout(() => this.map.invalidateSize(), 200);
+  }
+
+  goTo(id: string): void {
+    this.router.navigate(['/item-detail', id]);
   }
 }
