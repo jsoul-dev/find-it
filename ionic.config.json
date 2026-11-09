@@ -1,0 +1,7 @@
+{
+  "name": "find-it",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
