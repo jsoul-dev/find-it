@@ -47,8 +47,8 @@
 > ### 1. Home Screen & Overview Dashboard
 > When we launch the app, the first thing you see is the **Home Screen**. 
 > - At the top, we have our **Campus Overview Dashboard** featuring real-time metric cards for Total, Lost, Found, and Claimed items. Each card acts as an instant category filter with tactile feedback, and we can toggle the interactive NEUST campus map open or closed via the 'View Map' button.
+> - Right below the header, we have our live **Keyword Search Bar** and **Filter Segment**, letting students search by name or place and filter between **Lost**, **Found**, and **Claimed** items with instant reactive updates.
 > - A clean section divider separates the dashboard metrics from our live feed of reported belongings, displaying the active item count.
-> - The segmented filter bar also allows instantaneous switching between **All**, **Lost**, **Found**, and **Claimed** items using reactive Angular signals.
 > - Each item card displays the item photo thumbnail, category badge, report title, description, and contact information.
 >
 > ### 2. Reporting an Item (Post Item Flow)
@@ -127,7 +127,7 @@
 > ### Testing & Quality Assurance
 > To guarantee reliability, our team conducted comprehensive testing:
 > 1. **Manual Device Testing:** We executed a 10-point test matrix covering all core workflows—including clean data loading, offline airplane-mode error handling, input validation warnings, camera capture, GPS permissions, and PUT claim updates. All 10 test cases achieved a **Pass** status.
-> 2. **Automated Unit & E2E Testing:** In addition to physical phone testing, we configured automated unit tests via **Vitest** (6/6 passing) and E2E tests using **Playwright** (3/3 passing on a simulated Pixel 7 mobile viewport). These suites validate component lifecycle, service HTTP caching, dashboard metrics, and report submission forms.
+> 2. **Automated Unit & E2E Testing:** In addition to physical phone testing, we configured automated unit tests via **Vitest** (6/6 passing) and E2E tests using **Playwright** (4/4 passing on a simulated Pixel 7 mobile viewport). These suites validate component lifecycle, service HTTP caching, live search filtering, dashboard metrics, and report submission forms.
 >
 > ### Limitations & Future Improvements (CO4)
 > We also identified realistic limitations and future enhancements:

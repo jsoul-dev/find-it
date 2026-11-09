@@ -26,3 +26,11 @@ test('navigates to post item page and displays form fields', async ({ page }) =>
   await expect(page.getByText('Location Pin')).toBeVisible();
   await expect(page.locator('ion-button.submit-btn')).toBeVisible();
 });
+
+test('filters items using the searchbar', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('ion-searchbar')).toBeVisible();
+  const searchInput = page.locator('ion-searchbar input');
+  await searchInput.fill('Calculator');
+  await expect(page.locator('.items-list-wrapper')).toBeVisible();
+});

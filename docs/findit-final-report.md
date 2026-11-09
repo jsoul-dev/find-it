@@ -37,7 +37,7 @@ In academic environments such as the NEUST campus, lost and found personal belon
 - **Instant Reporting with Geographic Pinning:** Users post reports with descriptions, contact info, and an exact GPS pin via Capacitor Geolocation and an interactive Leaflet map.
 - **Visual Verification via Camera Integration:** Users can snap or attach photos using **Capacitor Camera** (`@capacitor/camera`). Photos are saved with a **hybrid local-first architecture**: high-resolution images are preserved on the local device via `localStorage`, while an optimized thumbnail is synced to the REST API for remote viewing.
 - **Shared Live Registry:** All reports synchronize with an HTTPS cloud REST API (`MockAPI.io`), allowing immediate discovery across the entire campus.
-- **Status Lifecycle & Filtering:** Reports can be filtered instantaneously by category (**Lost**, **Found**, **Claimed**) using reactive Angular signals, and resolved items can be marked as "Claimed" directly inside the application.
+- **Real-Time Keyword Search & Filtering:** Reports can be searched by keyword (name, description, location) via an integrated `ion-searchbar` and filtered instantaneously by category (**Lost**, **Found**, **Claimed**) using reactive Angular signals.
 - **Tactile Feedback:** Capacitor Haptics provides purposeful physical vibrations indicating operational success, input validation warnings, and network/hardware errors.
 
 ---
@@ -63,6 +63,8 @@ The application is structured into three primary views:
 - **Campus Statistics & Metrics Dashboard:** A 4-card interactive statistics overview summarizing **Total Items**, **Lost Items**, **Found Items**, and **Claimed Belongings** using reactive Angular `computed()` signals. Each card doubles as an instant filter toggle with full keyboard navigation and high-contrast color indicators.
 - **Collapsible Campus Map:** OpenStreetMap view centered on NEUST Sumacab Campus (`15.44825, 120.93922`), toggleable via a "View Map / Hide Map" button to keep the primary screen uncluttered and performant.
 - **Visual Section Divider:** A prominent structural divider separating the high-level metrics dashboard from the live feed of reported belongings, complete with an icon and live count badge (`X items`).
+- **Live Keyword Search Bar:** An `ion-searchbar` enables instantaneous real-time querying across item names, descriptions, and contact/location notes with debounced input.
+
 - **Segmented Filter Bar:** An `ion-segment` allows instantaneous switching between **All**, **Lost**, **Found**, and **Claimed** records.
 - **Live Item Cards:** Reusable `ItemCardComponent` displays item photo thumbnails, item name, description, contact details, a colored type badge (`Lost` in red, `Found` in green), and status indicator (`Open` or `Claimed`).
 - **System States:** Clear UI feedback displaying an `ion-spinner` during initial data load, an empty state message when no items match a selected filter, and an error card with a **Retry** button if network connectivity fails.
@@ -244,7 +246,8 @@ In addition to physical device verification, an automated Playwright test suite 
 - **Test 1:** Verifies Home screen header and all 4 segment buttons (`All`, `Lost`, `Found`, `Claimed`).
 - **Test 2:** Verifies the Leaflet campus map container (`#map`) mounts and renders.
 - **Test 3:** Verifies `/post-item` form cards, photo button, GPS locate trigger, and submit button.
-- **Execution Result:** 3/3 tests passing (9.1 seconds execution time).
+- **Test 4:** Verifies live keyword search input filtering across item cards.
+- **Execution Result:** 4/4 automated E2E tests passing.
 
 ### Limitations and Usability Issues
 1. **MockAPI.io 100KB Request Body Limit & Image Compression:** MockAPI.io free tier enforces a strict ~100KB aggregate payload limit per POST/PUT request. Because raw mobile camera photos typically span 2MB to 8MB, direct Base64 encoding triggers an HTTP 413 (Payload Too Large) error. To ensure dependable cloud synchronization, the app applies client-side HTML5 Canvas compression down to 300px width at 0.45 JPEG quality (~10–15KB). While sufficient for visual verification on mobile screens, fine text (e.g. tiny student ID numbers or serial codes) is compressed. In production, this would be superseded by dedicated object storage (Firebase Storage / AWS S3) storing only lightweight image URLs in the database.

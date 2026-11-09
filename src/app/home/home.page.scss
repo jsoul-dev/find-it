@@ -1,3 +1,18 @@
+.search-toolbar {
+  --padding-top: 2px;
+  --padding-bottom: 2px;
+  --padding-start: 10px;
+  --padding-end: 10px;
+  --min-height: 46px;
+
+  ion-searchbar {
+    padding: 0;
+    --box-shadow: none;
+    --border-radius: 10px;
+    --background: rgba(var(--ion-color-medium-rgb), 0.08);
+  }
+}
+
 .dashboard-wrapper {
   margin-bottom: 20px;
 }
