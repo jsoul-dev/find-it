@@ -9,9 +9,13 @@ test('loads the home page with title and segment filters', async ({ page }) => {
   await expect(page.locator('ion-segment-button[value="Claimed"]')).toBeVisible();
 });
 
-test('renders the campus overview map container', async ({ page }) => {
+test('renders the campus overview dashboard and metric cards', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('#map')).toBeVisible();
+  await expect(page.getByText('Campus Overview')).toBeVisible();
+  await expect(page.getByText('Total Items')).toBeVisible();
+  await expect(page.getByText('Lost Items')).toBeVisible();
+  await expect(page.getByText('Found Items')).toBeVisible();
+  await expect(page.locator('.stat-claimed')).toBeVisible();
 });
 
 test('navigates to post item page and displays form fields', async ({ page }) => {

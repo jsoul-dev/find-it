@@ -1,6 +1,7 @@
 import type { OnInit, AfterViewInit } from '@angular/core';
 import { Component, inject, signal, computed } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import {
   IonHeader,
   IonToolbar,
@@ -16,7 +17,7 @@ import {
   IonButton,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { add } from 'ionicons/icons';
+import { add, layersOutline, searchOutline, giftOutline, checkmarkCircleOutline, mapOutline } from 'ionicons/icons';
 import * as L from 'leaflet';
 
 import { ItemCardComponent } from '../components/item-card/item-card.component';
@@ -52,6 +53,12 @@ export class HomePage implements OnInit, AfterViewInit {
   loading = this.itemService.loading;
   error = this.itemService.error;
   filter = signal<'All' | 'Lost' | 'Found' | 'Claimed'>('All');
+  showMap = signal<boolean>(false);
+
+  totalCount = computed(() => this.items().length);
+  lostCount = computed(() => this.items().filter((i) => i.type === 'Lost' && i.status === 'Open').length);
+  foundCount = computed(() => this.items().filter((i) => i.type === 'Found' && i.status === 'Open').length);
+  claimedCount = computed(() => this.items().filter((i) => i.status === 'Claimed').length);
 
   filtered = computed(() => {
     const currentFilter = this.filter();
@@ -66,7 +73,14 @@ export class HomePage implements OnInit, AfterViewInit {
   });
 
   constructor() {
-    addIcons({ add });
+    addIcons({
+      add,
+      'layers-outline': layersOutline,
+      'search-outline': searchOutline,
+      'gift-outline': giftOutline,
+      'checkmark-circle-outline': checkmarkCircleOutline,
+      'map-outline': mapOutline,
+    });
   }
 
   ngOnInit(): void {
@@ -86,6 +100,13 @@ export class HomePage implements OnInit, AfterViewInit {
     setTimeout(() => this.map.invalidateSize(), 200);
   }
 
+  toggleMap(): void {
+    this.showMap.update((v) => !v);
+    if (this.showMap()) {
+      setTimeout(() => this.map.invalidateSize(), 200);
+    }
+  }
+
   retry(): void {
     this.itemService.fetchItems();
   }
@@ -94,6 +115,15 @@ export class HomePage implements OnInit, AfterViewInit {
     const value = event.detail.value as 'All' | 'Lost' | 'Found' | 'Claimed';
     if (value) {
       this.filter.set(value);
+    }
+  }
+
+  setFilterValue(category: 'All' | 'Lost' | 'Found' | 'Claimed'): void {
+    this.filter.set(category);
+    try {
+      Haptics.impact({ style: ImpactStyle.Light });
+    } catch (e) {
+      void e;
     }
   }
 
