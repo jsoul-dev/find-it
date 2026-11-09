@@ -13,10 +13,10 @@
 ### Group Members
 | Member Name | Student ID |
 |---|---|
-| `[Student 1 Name]` | `[Student ID]` |
-| `[Student 2 Name]` | `[Student ID]` |
-| `[Student 3 Name]` | `[Student ID]` |
-| `[Student 4 Name]` | `[Student ID]` |
+| John Carlo DG. Lemence | SUM2023-01395 |
+| Chris Karl M. Lacanilao | SUM2023-01362 |
+| Manny N. Agulto | SUM2023-01888 |
+| Reyven B. Calara | SUM2023-02252 |
 
 ---
 
