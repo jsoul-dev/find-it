@@ -60,7 +60,7 @@ The application is structured into three primary views:
 ```
 
 ### 1. Home / Items List (`/home`)
-- **Top Campus Overview Map:** Renders an interactive OpenStreetMap view centered on the NEUST campus coordinates (`15.65588, 121.039818`).
+- **Top Campus Overview Map:** Renders an interactive OpenStreetMap view centered on the NEUST Sumacab Campus coordinates (`15.44825, 120.93922`).
 - **Segmented Filter Bar:** An `ion-segment` allows instantaneous switching between **All**, **Lost**, **Found**, and **Claimed** records.
 - **Live Item Cards:** Reusable `ItemCardComponent` displays item photo thumbnails, item name, description, contact details, a colored type badge (`Lost` in red, `Found` in green), and status indicator (`Open` or `Claimed`).
 - **System States:** Clear UI feedback displaying an `ion-spinner` during initial data load, an empty state message when no items match a selected filter, and an error card with a **Retry** button if network connectivity fails.

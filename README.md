@@ -23,7 +23,7 @@ The application provides a centralized, real-time registry for reporting and dis
 
 ## 2. Key Features
 
-- **Campus Overview Map:** Interactive Leaflet map on the Home screen displaying the campus vicinity (`15.65588, 121.039818`).
+- **Campus Overview Map:** Interactive Leaflet map on the Home screen displaying the NEUST Sumacab Campus vicinity (`15.44825, 120.93922`).
 - **Real-Time Feed with Segmented Filtering:** Browse all reports or filter reactively between All, Lost, Found, and Claimed items using Angular `computed()` signals.
 - **Visual Evidence (Camera Integration):** Attach item photos directly from the camera or photo library. Photos are cached locally on the device and synchronized as compressed thumbnails to the cloud API.
 - **Geographic Pinning (Geolocation):** Pin exact locations where items were lost or found using the "Locate Me" button or by tapping directly on the map.

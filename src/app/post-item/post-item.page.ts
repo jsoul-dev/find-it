@@ -74,7 +74,7 @@ export class PostItemPage implements AfterViewInit {
   }
 
   private initMap(): void {
-    this.map = L.map('new-map').setView([15.65588, 121.039818], 15);
+    this.map = L.map('new-map').setView([15.44825, 120.93922], 16);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; OpenStreetMap contributors',
