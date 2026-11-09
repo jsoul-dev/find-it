@@ -23,9 +23,9 @@ The application provides a centralized, real-time registry for reporting and dis
 
 ## 2. Key Features
 
-- **Campus Overview Map:** Interactive Leaflet map on the Home screen displaying the NEUST Sumacab Campus vicinity (`15.44825, 120.93922`).
-- **Real-Time Feed with Segmented Filtering:** Browse all reports or filter reactively between All, Lost, Found, and Claimed items using Angular `computed()` signals.
-- **Visual Evidence (Camera Integration):** Attach item photos directly from the camera or photo library. Photos are cached locally on the device and synchronized as compressed thumbnails to the cloud API.
+- **Campus Overview & Metrics Dashboard:** Interactive dashboard summarizing live counts (Total, Lost, Found, Claimed) with tactile category shortcuts and a collapsible NEUST Sumacab campus map (`15.44825, 120.93922`).
+- **Real-Time Search & Segmented Filtering:** Debounced keyword searchbar (`ion-searchbar`) with instant filtering across names, descriptions, and places, paired with segment buttons.
+- **Visual Verification & Cloud CDN Hosting:** Capture photos via Capacitor Camera (`@capacitor/camera`) and automatically upload them to ImgBB CDN for direct HTTPS image URLs, backed by local device storage cache.
 - **Geographic Pinning (Geolocation):** Pin exact locations where items were lost or found using the "Locate Me" button or by tapping directly on the map.
 - **Item Details and Resolution:** View item details, contact details, attached photos, and an interactive pin. Campus guards and owners can mark open items as "Claimed" via HTTP PUT.
 - **Purposeful Haptic Feedback:** Tactile confirmation on successful submissions, input validation warnings for empty fields, and error notifications on network or hardware failures.
@@ -84,6 +84,31 @@ Base URL: `https://6af134ed11a6aa866e800324.mockapi.io/api/v1/items`
    ```bash
    npm install
    ```
+
+### Environment & API Configuration
+
+To run the application locally or compile the project from source, set up your local environment file:
+
+1. Copy the example environment template:
+   ```bash
+   cp src/environments/environment.example.ts src/environments/environment.ts
+   cp src/environments/environment.example.ts src/environments/environment.prod.ts
+   ```
+
+2. Configure the following APIs in `src/environments/environment.ts`:
+   - **MockAPI.io REST API (`apiUrl`):** Required for saving and querying lost and found reports. You can create a free resource at [mockapi.io](https://mockapi.io/) with fields: `id`, `name`, `type`, `description`, `contact`, `lat`, `lng`, `status`, `photo`, `createdAt`.
+   - **ImgBB API Key (`imgbbApiKey`):** Free API key from [api.imgbb.com](https://api.imgbb.com/) used to host attached item photos on a CDN and save direct HTTPS links in MockAPI. *(Note: If left blank or if offline, FindIt gracefully falls back to local device storage).*
+   - **ImgBB Upload URL (`imgbbUrl`):** Set to `https://api.imgbb.com/1/upload`.
+
+Example `src/environments/environment.ts`:
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'https://6af134ed11a6aa866e800324.mockapi.io/api/v1/items',
+  imgbbApiKey: 'YOUR_IMGBB_API_KEY',
+  imgbbUrl: 'https://api.imgbb.com/1/upload',
+};
+```
 
 ### Running the App in the Browser
 
