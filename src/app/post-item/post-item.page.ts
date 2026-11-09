@@ -16,7 +16,6 @@ import {
   IonButton,
   IonIcon,
   IonImg,
-  IonText,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { locate, camera, trash } from 'ionicons/icons';
@@ -46,7 +45,6 @@ import { ItemService } from '../services/item';
     IonButton,
     IonIcon,
     IonImg,
-    IonText,
   ],
 })
 export class PostItemPage implements AfterViewInit {
