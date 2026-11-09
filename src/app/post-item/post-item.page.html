@@ -12,12 +12,7 @@
     <div class="form-card">
       <div class="section-title">Item Information</div>
       <ion-item lines="none" class="custom-item">
-        <ion-select
-          [(ngModel)]="type"
-          label="Report Category"
-          labelPlacement="stacked"
-          fill="outline"
-        >
+        <ion-select [(ngModel)]="type" label="Report Category" labelPlacement="stacked" fill="outline">
           <ion-select-option value="Lost">Lost Item</ion-select-option>
           <ion-select-option value="Found">Found Item</ion-select-option>
         </ion-select>
@@ -59,47 +54,26 @@
       <div class="section-title">Visual Evidence</div>
       <div class="photo-section">
         @if (photo()) {
-          <div class="preview-wrapper">
-            <ion-img
-              [src]="photo()!"
-              alt="Attached item photo"
-              class="photo-preview"
-            ></ion-img>
-            <ion-button
-              color="danger"
-              fill="clear"
-              size="small"
-              (click)="removePhoto()"
-            >
-              <ion-icon slot="start" name="trash"></ion-icon>
-              Remove Photo
-            </ion-button>
-          </div>
-        } @else {
-          <ion-button
-            expand="block"
-            fill="outline"
-            color="primary"
-            (click)="takePhoto()"
-          >
-            <ion-icon slot="start" name="camera"></ion-icon>
-            Take or Choose Photo
+        <div class="preview-wrapper">
+          <ion-img [src]="photo()!" alt="Attached item photo" class="photo-preview"></ion-img>
+          <ion-button color="danger" fill="clear" size="small" (click)="removePhoto()">
+            <ion-icon slot="start" name="trash"></ion-icon>
+            Remove Photo
           </ion-button>
+        </div>
+        } @else {
+        <ion-button expand="block" fill="outline" color="primary" (click)="takePhoto()">
+          <ion-icon slot="start" name="camera"></ion-icon>
+          Take or Choose Photo
+        </ion-button>
         }
       </div>
     </div>
 
     <div class="form-card">
       <div class="section-title">Location Pin</div>
-      <p class="map-helper">
-        Tap the button to pinpoint via GPS, or tap the map directly.
-      </p>
-      <ion-button
-        expand="block"
-        fill="outline"
-        color="secondary"
-        (click)="locateMe()"
-      >
+      <p class="map-helper">Tap the button to pinpoint via GPS, or tap the map directly.</p>
+      <ion-button expand="block" fill="outline" color="secondary" (click)="locateMe()">
         <ion-icon slot="start" name="locate"></ion-icon>
         Locate Me via GPS
       </ion-button>
@@ -107,26 +81,20 @@
       <div id="new-map"></div>
 
       @if (lat() !== null && lng() !== null) {
-        <div class="coord-pill">
-          <span>Pinned: {{ lat()!.toFixed(5) }}, {{ lng()!.toFixed(5) }}</span>
-        </div>
+      <div class="coord-pill">
+        <span>Pinned: {{ lat()!.toFixed(5) }}, {{ lng()!.toFixed(5) }}</span>
+      </div>
       }
     </div>
 
     @if (formError()) {
-      <div class="form-error-banner">
-        <p>{{ formError() }}</p>
-      </div>
+    <div class="form-error-banner">
+      <p>{{ formError() }}</p>
+    </div>
     }
 
     <div class="submit-wrapper">
-      <ion-button
-        expand="block"
-        color="primary"
-        (click)="submit()"
-        [disabled]="submitting()"
-        class="submit-btn"
-      >
+      <ion-button expand="block" color="primary" (click)="submit()" [disabled]="submitting()" class="submit-btn">
         {{ submitting() ? 'Submitting Report...' : 'Submit Report' }}
       </ion-button>
     </div>

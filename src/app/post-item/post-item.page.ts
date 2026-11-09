@@ -1,6 +1,10 @@
-import { Component, AfterViewInit, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import type { AfterViewInit } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Geolocation } from '@capacitor/geolocation';
+import { Haptics, NotificationType } from '@capacitor/haptics';
 import {
   IonHeader,
   IonToolbar,
@@ -20,9 +24,7 @@ import {
 import { addIcons } from 'ionicons';
 import { locate, camera, trash } from 'ionicons/icons';
 import * as L from 'leaflet';
-import { Geolocation } from '@capacitor/geolocation';
-import { Haptics, NotificationType } from '@capacitor/haptics';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+
 import { ItemService } from '../services/item';
 
 @Component({
@@ -90,10 +92,7 @@ export class PostItemPage implements AfterViewInit {
     if (this.locationMarker) {
       this.locationMarker.setLatLng([lat, lng]);
     } else {
-      this.locationMarker = L.circleMarker([lat, lng])
-        .addTo(this.map)
-        .bindPopup('Item Location')
-        .openPopup();
+      this.locationMarker = L.circleMarker([lat, lng]).addTo(this.map).bindPopup('Item Location').openPopup();
     }
   }
 
@@ -109,7 +108,9 @@ export class PostItemPage implements AfterViewInit {
       this.formError.set('Could not access current location. Please check GPS permissions or tap the map.');
       try {
         await Haptics.notification({ type: NotificationType.Error });
-      } catch {}
+      } catch (e) {
+        void e;
+      }
     }
   }
 
@@ -139,7 +140,9 @@ export class PostItemPage implements AfterViewInit {
       this.formError.set('Please fill in the item name, contact, and pick a location on the map.');
       try {
         await Haptics.notification({ type: NotificationType.Warning });
-      } catch {}
+      } catch (e) {
+        void e;
+      }
       return;
     }
 
@@ -164,7 +167,9 @@ export class PostItemPage implements AfterViewInit {
           }
           try {
             await Haptics.notification({ type: NotificationType.Success });
-          } catch {}
+          } catch (e) {
+            void e;
+          }
           this.submitting.set(false);
           this.itemService.fetchItems();
           this.router.navigate(['/home']);
@@ -175,7 +180,9 @@ export class PostItemPage implements AfterViewInit {
           this.formError.set('Could not post item to server. Please try again.');
           try {
             await Haptics.notification({ type: NotificationType.Error });
-          } catch {}
+          } catch (e) {
+            void e;
+          }
         },
       });
   }

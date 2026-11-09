@@ -1,9 +1,10 @@
-import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable, inject, signal } from '@angular/core';
 import { Haptics, NotificationType } from '@capacitor/haptics';
+import type { Observable } from 'rxjs';
+
 import { environment } from '../../environments/environment';
-import { Item, NewItem } from '../models/item';
+import type { Item, NewItem } from '../models/item';
 
 @Injectable({
   providedIn: 'root',
@@ -30,7 +31,9 @@ export class ItemService {
         this.loading.set(false);
         try {
           await Haptics.notification({ type: NotificationType.Error });
-        } catch {}
+        } catch (e) {
+          void e;
+        }
       },
     });
   }
@@ -53,7 +56,9 @@ export class ItemService {
   saveLocalPhoto(id: string, dataUrl: string): void {
     try {
       localStorage.setItem(`findit_photo_${id}`, dataUrl);
-    } catch {}
+    } catch (e) {
+      void e;
+    }
   }
 
   getPhoto(item: Item): string | undefined {
@@ -62,7 +67,9 @@ export class ItemService {
       if (local) {
         return local;
       }
-    } catch {}
+    } catch (e) {
+      void e;
+    }
     return item.photo;
   }
 }

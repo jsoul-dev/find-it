@@ -1,13 +1,6 @@
-import {
-  Component,
-  OnInit,
-  AfterViewInit,
-  inject,
-  input,
-  computed,
-  signal,
-  effect,
-} from '@angular/core';
+import type { OnInit, AfterViewInit } from '@angular/core';
+import { Component, inject, input, computed, signal, effect } from '@angular/core';
+import { Haptics, NotificationType } from '@capacitor/haptics';
 import {
   IonHeader,
   IonToolbar,
@@ -27,7 +20,7 @@ import {
 import { addIcons } from 'ionicons';
 import { checkmarkCircle } from 'ionicons/icons';
 import * as L from 'leaflet';
-import { Haptics, NotificationType } from '@capacitor/haptics';
+
 import { ItemService } from '../services/item';
 
 @Component({
@@ -100,10 +93,7 @@ export class ItemDetailPage implements OnInit, AfterViewInit {
       maxZoom: 19,
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
-    L.circleMarker([lat, lng])
-      .addTo(this.map)
-      .bindPopup(title)
-      .openPopup();
+    L.circleMarker([lat, lng]).addTo(this.map).bindPopup(title).openPopup();
     setTimeout(() => this.map?.invalidateSize(), 200);
   }
 
@@ -116,18 +106,20 @@ export class ItemDetailPage implements OnInit, AfterViewInit {
       next: async (updated) => {
         try {
           await Haptics.notification({ type: NotificationType.Success });
-        } catch {}
+        } catch (e) {
+          void e;
+        }
         this.claiming.set(false);
-        this.itemService.items.update((list) =>
-          list.map((i) => (i.id === updated.id ? updated : i))
-        );
+        this.itemService.items.update((list) => list.map((i) => (i.id === updated.id ? updated : i)));
       },
       error: async (err) => {
         console.error('PUT Error:', err);
         this.claiming.set(false);
         try {
           await Haptics.notification({ type: NotificationType.Error });
-        } catch {}
+        } catch (e) {
+          void e;
+        }
       },
     });
   }
