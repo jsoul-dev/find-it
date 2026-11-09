@@ -65,6 +65,8 @@
   }
 
   <div class="ion-margin-top">
-    <ion-button expand="block" (click)="submit()">Submit Report</ion-button>
+    <ion-button expand="block" (click)="submit()" [disabled]="submitting()">
+      {{ submitting() ? 'Submitting...' : 'Submit Report' }}
+    </ion-button>
   </div>
 </ion-content>

@@ -58,6 +58,7 @@ export class PostItemPage implements AfterViewInit {
   lat = signal<number | null>(null);
   lng = signal<number | null>(null);
   formError = signal<string>('');
+  submitting = signal<boolean>(false);
 
   constructor() {
     addIcons({ locate });
@@ -113,16 +114,29 @@ export class PostItemPage implements AfterViewInit {
     }
 
     this.formError.set('');
-    this.itemService.addItem({
-      type: this.type,
-      name: this.name.trim(),
-      description: this.description.trim(),
-      contact: this.contact.trim(),
-      lat: this.lat()!,
-      lng: this.lng()!,
-      status: 'Open',
-    });
+    this.submitting.set(true);
 
-    this.router.navigate(['/home']);
+    this.itemService
+      .addItem({
+        type: this.type,
+        name: this.name.trim(),
+        description: this.description.trim(),
+        contact: this.contact.trim(),
+        lat: this.lat()!,
+        lng: this.lng()!,
+        status: 'Open',
+      })
+      .subscribe({
+        next: () => {
+          this.submitting.set(false);
+          this.itemService.fetchItems();
+          this.router.navigate(['/home']);
+        },
+        error: (err) => {
+          console.error('POST Error:', err);
+          this.submitting.set(false);
+          this.formError.set('Could not post item to server. Please try again.');
+        },
+      });
   }
 }

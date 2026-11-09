@@ -1,5 +1,6 @@
 import {
   Component,
+  OnInit,
   AfterViewInit,
   inject,
   signal,
@@ -17,6 +18,8 @@ import {
   IonSegment,
   IonSegmentButton,
   IonLabel,
+  IonSpinner,
+  IonButton,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { add } from 'ionicons/icons';
@@ -40,15 +43,19 @@ import { ItemCardComponent } from '../components/item-card/item-card.component';
     IonSegment,
     IonSegmentButton,
     IonLabel,
+    IonSpinner,
+    IonButton,
     ItemCardComponent,
   ],
 })
-export class HomePage implements AfterViewInit {
+export class HomePage implements OnInit, AfterViewInit {
   private itemService = inject(ItemService);
   private router = inject(Router);
   private map!: L.Map;
 
   items = this.itemService.items;
+  loading = this.itemService.loading;
+  error = this.itemService.error;
   filter = signal<'All' | 'Lost' | 'Found' | 'Claimed'>('All');
 
   filtered = computed(() => {
@@ -67,6 +74,10 @@ export class HomePage implements AfterViewInit {
     addIcons({ add });
   }
 
+  ngOnInit(): void {
+    this.itemService.fetchItems();
+  }
+
   ngAfterViewInit(): void {
     this.initMap();
   }
@@ -78,6 +89,10 @@ export class HomePage implements AfterViewInit {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
     setTimeout(() => this.map.invalidateSize(), 200);
+  }
+
+  retry(): void {
+    this.itemService.fetchItems();
   }
 
   setFilter(event: CustomEvent): void {
