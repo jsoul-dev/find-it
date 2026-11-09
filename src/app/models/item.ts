@@ -8,6 +8,7 @@ export interface Item {
   lng: number;
   status: 'Open' | 'Claimed';
   createdAt?: string;
+  photo?: string;
 }
 
 export type NewItem = Omit<Item, 'id' | 'createdAt'>;
