@@ -15,7 +15,6 @@ import {
   IonCardContent,
   IonButton,
   IonIcon,
-  IonImg,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { checkmarkCircle } from 'ionicons/icons';
@@ -41,7 +40,6 @@ import { ItemService } from '../services/item';
     IonCardContent,
     IonButton,
     IonIcon,
-    IonImg,
   ],
 })
 export class ItemDetailPage implements OnInit, AfterViewInit {

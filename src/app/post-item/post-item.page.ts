@@ -18,7 +18,6 @@ import {
   IonSelectOption,
   IonButton,
   IonIcon,
-  IonImg,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { locate, camera, trash } from 'ionicons/icons';
@@ -44,7 +43,6 @@ import { ItemService } from '../services/item';
     IonSelectOption,
     IonButton,
     IonIcon,
-    IonImg,
   ],
 })
 export class PostItemPage implements AfterViewInit {
@@ -112,17 +110,39 @@ export class PostItemPage implements AfterViewInit {
     }
   }
 
+  private compressPhoto(dataUrl: string, maxWidth = 300, quality = 0.45): Promise<string> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const scale = Math.min(1, maxWidth / img.width);
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        } else {
+          resolve(dataUrl);
+        }
+      };
+      img.onerror = () => resolve(dataUrl);
+      img.src = dataUrl;
+    });
+  }
+
   async takePhoto(): Promise<void> {
     try {
       const image = await Camera.getPhoto({
-        quality: 35,
+        quality: 30,
         allowEditing: false,
         resultType: CameraResultType.DataUrl,
         source: CameraSource.Prompt,
-        width: 400,
+        width: 300,
       });
       if (image.dataUrl) {
-        this.photo.set(image.dataUrl);
+        const compressed = await this.compressPhoto(image.dataUrl, 300, 0.45);
+        this.photo.set(compressed);
       }
     } catch {
       this.formError.set('Camera was cancelled or unavailable.');
@@ -147,6 +167,8 @@ export class PostItemPage implements AfterViewInit {
     this.formError.set('');
     this.submitting.set(true);
 
+    const photoData = this.photo();
+
     this.itemService
       .addItem({
         type: this.type,
@@ -156,12 +178,12 @@ export class PostItemPage implements AfterViewInit {
         lat: this.lat()!,
         lng: this.lng()!,
         status: 'Open',
-        photo: this.photo() ?? undefined,
+        photo: photoData ?? undefined,
       })
       .subscribe({
         next: async (created) => {
-          if (this.photo() && created?.id) {
-            this.itemService.saveLocalPhoto(created.id, this.photo()!);
+          if (photoData && created?.id) {
+            this.itemService.saveLocalPhoto(created.id, photoData);
           }
           try {
             await Haptics.notification({ type: NotificationType.Success });
@@ -173,7 +195,44 @@ export class PostItemPage implements AfterViewInit {
           this.router.navigate(['/home']);
         },
         error: async (err) => {
-          console.error('POST Error:', err);
+          if (photoData && (err?.status === 413 || err?.status === 400)) {
+            this.itemService
+              .addItem({
+                type: this.type,
+                name: this.name.trim(),
+                description: this.description.trim(),
+                contact: this.contact.trim(),
+                lat: this.lat()!,
+                lng: this.lng()!,
+                status: 'Open',
+              })
+              .subscribe({
+                next: async (created) => {
+                  if (created?.id) {
+                    this.itemService.saveLocalPhoto(created.id, photoData);
+                  }
+                  try {
+                    await Haptics.notification({ type: NotificationType.Success });
+                  } catch (e) {
+                    void e;
+                  }
+                  this.submitting.set(false);
+                  this.itemService.fetchItems();
+                  this.router.navigate(['/home']);
+                },
+                error: async () => {
+                  this.submitting.set(false);
+                  this.formError.set('Could not post item to server. Please try again.');
+                  try {
+                    await Haptics.notification({ type: NotificationType.Error });
+                  } catch (e) {
+                    void e;
+                  }
+                },
+              });
+            return;
+          }
+
           this.submitting.set(false);
           this.formError.set('Could not post item to server. Please try again.');
           try {
