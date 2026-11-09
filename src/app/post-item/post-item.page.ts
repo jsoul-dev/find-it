@@ -15,13 +15,15 @@ import {
   IonSelectOption,
   IonButton,
   IonIcon,
+  IonImg,
   IonText,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { locate } from 'ionicons/icons';
+import { locate, camera, trash } from 'ionicons/icons';
 import * as L from 'leaflet';
 import { Geolocation } from '@capacitor/geolocation';
 import { Haptics, NotificationType } from '@capacitor/haptics';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { ItemService } from '../services/item';
 
 @Component({
@@ -43,6 +45,7 @@ import { ItemService } from '../services/item';
     IonSelectOption,
     IonButton,
     IonIcon,
+    IonImg,
     IonText,
   ],
 })
@@ -58,11 +61,12 @@ export class PostItemPage implements AfterViewInit {
   contact = '';
   lat = signal<number | null>(null);
   lng = signal<number | null>(null);
+  photo = signal<string | null>(null);
   formError = signal<string>('');
   submitting = signal<boolean>(false);
 
   constructor() {
-    addIcons({ locate });
+    addIcons({ locate, camera, trash });
   }
 
   ngAfterViewInit(): void {
@@ -111,6 +115,27 @@ export class PostItemPage implements AfterViewInit {
     }
   }
 
+  async takePhoto(): Promise<void> {
+    try {
+      const image = await Camera.getPhoto({
+        quality: 35,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Prompt,
+        width: 400,
+      });
+      if (image.dataUrl) {
+        this.photo.set(image.dataUrl);
+      }
+    } catch {
+      this.formError.set('Camera was cancelled or unavailable.');
+    }
+  }
+
+  removePhoto(): void {
+    this.photo.set(null);
+  }
+
   async submit(): Promise<void> {
     if (!this.name.trim() || !this.contact.trim() || this.lat() === null || this.lng() === null) {
       this.formError.set('Please fill in the item name, contact, and pick a location on the map.');
@@ -132,9 +157,13 @@ export class PostItemPage implements AfterViewInit {
         lat: this.lat()!,
         lng: this.lng()!,
         status: 'Open',
+        photo: this.photo() ?? undefined,
       })
       .subscribe({
-        next: async () => {
+        next: async (created) => {
+          if (this.photo() && created?.id) {
+            this.itemService.saveLocalPhoto(created.id, this.photo()!);
+          }
           try {
             await Haptics.notification({ type: NotificationType.Success });
           } catch {}

@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, inject } from '@angular/core';
 import {
   IonCard,
   IonCardHeader,
@@ -6,8 +6,10 @@ import {
   IonCardSubtitle,
   IonCardContent,
   IonBadge,
+  IonImg,
 } from '@ionic/angular';
 import { Item } from '../../models/item';
+import { ItemService } from '../../services/item';
 
 @Component({
   selector: 'app-item-card',
@@ -20,11 +22,18 @@ import { Item } from '../../models/item';
     IonCardSubtitle,
     IonCardContent,
     IonBadge,
+    IonImg,
   ],
 })
 export class ItemCardComponent {
+  private itemService = inject(ItemService);
+
   item = input.required<Item>();
   open = output<string>();
+
+  get photoUrl(): string | undefined {
+    return this.itemService.getPhoto(this.item());
+  }
 
   onSelect(): void {
     this.open.emit(this.item().id);

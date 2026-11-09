@@ -1,4 +1,7 @@
 <ion-card (click)="onSelect()" [button]="true">
+  @if (photoUrl) {
+    <ion-img [src]="photoUrl" alt="Item photo" class="card-thumbnail"></ion-img>
+  }
   <ion-card-header>
     <div class="card-header-row">
       <ion-card-title>{{ item().name }}</ion-card-title>

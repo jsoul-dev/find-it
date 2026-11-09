@@ -49,4 +49,20 @@ export class ItemService {
   getById(id: string): Item | undefined {
     return this.items().find((i) => i.id === id);
   }
+
+  saveLocalPhoto(id: string, dataUrl: string): void {
+    try {
+      localStorage.setItem(`findit_photo_${id}`, dataUrl);
+    } catch {}
+  }
+
+  getPhoto(item: Item): string | undefined {
+    try {
+      const local = localStorage.getItem(`findit_photo_${item.id}`);
+      if (local) {
+        return local;
+      }
+    } catch {}
+    return item.photo;
+  }
 }

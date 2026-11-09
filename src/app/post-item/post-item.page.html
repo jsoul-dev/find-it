@@ -43,7 +43,24 @@
     ></ion-input>
   </ion-item>
 
-  <div class="ion-margin-top ion-margin-bottom">
+  <div class="photo-section ion-margin-top ion-margin-bottom">
+    @if (photo()) {
+      <div class="preview-wrapper">
+        <ion-img [src]="photo()!" alt="Attached item photo" class="photo-preview"></ion-img>
+        <ion-button color="danger" fill="outline" size="small" (click)="removePhoto()">
+          <ion-icon slot="start" name="trash"></ion-icon>
+          Remove Photo
+        </ion-button>
+      </div>
+    } @else {
+      <ion-button expand="block" fill="outline" color="secondary" (click)="takePhoto()">
+        <ion-icon slot="start" name="camera"></ion-icon>
+        Attach Item Photo
+      </ion-button>
+    }
+  </div>
+
+  <div class="ion-margin-bottom">
     <ion-button expand="block" fill="outline" (click)="locateMe()">
       <ion-icon slot="start" name="locate"></ion-icon>
       Locate Me
