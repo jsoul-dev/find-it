@@ -1,6 +1,6 @@
 import type { OnInit, AfterViewInit } from '@angular/core';
 import { Component, inject, signal, computed } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import {
   IonHeader,
@@ -36,7 +36,6 @@ import { ItemService } from '../services/item';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   imports: [
-    RouterLink,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -141,5 +140,12 @@ export class HomePage implements OnInit, AfterViewInit {
       document.activeElement.blur();
     }
     this.router.navigate(['/item-detail', id]);
+  }
+
+  goToPost(): void {
+    if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    this.router.navigate(['/post-item']);
   }
 }

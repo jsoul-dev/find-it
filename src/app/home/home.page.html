@@ -127,7 +127,7 @@
   }
 
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-    <ion-fab-button routerLink="/post-item" color="primary">
+    <ion-fab-button (click)="goToPost()" color="primary" aria-label="Report new item">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

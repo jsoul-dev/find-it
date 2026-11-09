@@ -2,6 +2,7 @@ import type { ComponentFixture } from '@angular/core/testing';
 import { TestBed } from '@angular/core/testing';
 
 import type { Item } from '../../models/item';
+
 import { ItemCardComponent } from './item-card.component';
 
 describe('ItemCardComponent', () => {
