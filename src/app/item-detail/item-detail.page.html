@@ -13,7 +13,7 @@
     <ion-card class="detail-card">
       @if (photoUrl) {
       <div class="hero-image-wrapper">
-        <ion-img [src]="photoUrl" alt="Item photo" class="detail-photo"></ion-img>
+        <img [src]="photoUrl" alt="Item photo" class="detail-photo" loading="lazy" />
       </div>
       }
 

@@ -1,7 +1,7 @@
 <ion-card (click)="onSelect()" [button]="true" class="findit-card">
   @if (photoUrl) {
     <div class="thumbnail-wrapper">
-      <ion-img [src]="photoUrl" alt="Item photo" class="card-thumbnail"></ion-img>
+      <img [src]="photoUrl" alt="Item photo" class="card-thumbnail" loading="lazy" />
     </div>
   }
   <ion-card-header>

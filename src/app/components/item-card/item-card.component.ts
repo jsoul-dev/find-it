@@ -1,5 +1,5 @@
 import { Component, input, output, inject } from '@angular/core';
-import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonBadge, IonImg } from '@ionic/angular';
+import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonBadge } from '@ionic/angular';
 
 import type { Item } from '../../models/item';
 import { ItemService } from '../../services/item';
@@ -8,7 +8,7 @@ import { ItemService } from '../../services/item';
   selector: 'app-item-card',
   templateUrl: './item-card.component.html',
   styleUrls: ['./item-card.component.scss'],
-  imports: [IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonBadge, IonImg],
+  imports: [IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonBadge],
 })
 export class ItemCardComponent {
   private itemService = inject(ItemService);

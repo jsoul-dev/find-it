@@ -56,7 +56,7 @@
       <div class="photo-section">
         @if (photo()) {
         <div class="preview-wrapper">
-          <ion-img [src]="photo()!" alt="Attached item photo" class="photo-preview"></ion-img>
+          <img [src]="photo()!" alt="Attached item photo" class="photo-preview" loading="lazy" />
           <ion-button color="danger" fill="clear" size="small" (click)="removePhoto()">
             <ion-icon slot="start" name="trash"></ion-icon>
             Remove Photo
