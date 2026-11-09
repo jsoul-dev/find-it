@@ -21,11 +21,79 @@
 </ion-header>
 
 <ion-content class="ion-padding" [fullscreen]="true">
-  <div class="map-card-wrapper">
-    <div class="map-card-header">
-      <span class="map-caption">Campus Overview</span>
+  <div class="dashboard-wrapper">
+    <div class="dashboard-header">
+      <div class="dashboard-heading">
+        <h2 class="dashboard-title">Campus Overview</h2>
+        <span class="dashboard-subtitle">NEUST Sumacab Registry</span>
+      </div>
+      <ion-button fill="clear" size="small" (click)="toggleMap()" class="map-toggle-btn">
+        <ion-icon slot="start" [name]="showMap() ? 'layers-outline' : 'map-outline'"></ion-icon>
+        {{ showMap() ? 'Hide Map' : 'View Map' }}
+      </ion-button>
     </div>
-    <div id="map"></div>
+
+    <div class="stats-grid">
+      <button
+        type="button"
+        class="stat-card stat-all"
+        [class.active]="filter() === 'All'"
+        (click)="setFilterValue('All')"
+      >
+        <div class="stat-top">
+          <span class="stat-label">Total Items</span>
+          <ion-icon name="layers-outline" class="stat-icon"></ion-icon>
+        </div>
+        <div class="stat-count">{{ totalCount() }}</div>
+        <div class="stat-desc">All campus reports</div>
+      </button>
+
+      <button
+        type="button"
+        class="stat-card stat-lost"
+        [class.active]="filter() === 'Lost'"
+        (click)="setFilterValue('Lost')"
+      >
+        <div class="stat-top">
+          <span class="stat-label">Lost Items</span>
+          <ion-icon name="search-outline" class="stat-icon"></ion-icon>
+        </div>
+        <div class="stat-count">{{ lostCount() }}</div>
+        <div class="stat-desc">Seeking owner</div>
+      </button>
+
+      <button
+        type="button"
+        class="stat-card stat-found"
+        [class.active]="filter() === 'Found'"
+        (click)="setFilterValue('Found')"
+      >
+        <div class="stat-top">
+          <span class="stat-label">Found Items</span>
+          <ion-icon name="gift-outline" class="stat-icon"></ion-icon>
+        </div>
+        <div class="stat-count">{{ foundCount() }}</div>
+        <div class="stat-desc">Safely turned in</div>
+      </button>
+
+      <button
+        type="button"
+        class="stat-card stat-claimed"
+        [class.active]="filter() === 'Claimed'"
+        (click)="setFilterValue('Claimed')"
+      >
+        <div class="stat-top">
+          <span class="stat-label">Claimed</span>
+          <ion-icon name="checkmark-circle-outline" class="stat-icon"></ion-icon>
+        </div>
+        <div class="stat-count">{{ claimedCount() }}</div>
+        <div class="stat-desc">Returned to owner</div>
+      </button>
+    </div>
+
+    <div class="map-card-wrapper" [style.display]="showMap() ? 'block' : 'none'">
+      <div id="map"></div>
+    </div>
   </div>
 
   @if (loading()) {
