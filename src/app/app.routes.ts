@@ -15,7 +15,7 @@ export const routes: Routes = [
     loadComponent: () => import('./post-item/post-item.page').then((m) => m.PostItemPage),
   },
   {
-    path: 'item-detail',
+    path: 'item-detail/:id',
     loadComponent: () => import('./item-detail/item-detail.page').then((m) => m.ItemDetailPage),
   },
 ];

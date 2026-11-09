@@ -1,0 +1,17 @@
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.description-text {
+  font-size: 1rem;
+  margin-bottom: 12px;
+}
+
+#detail-map {
+  width: 100%;
+  height: 320px;
+  border-radius: 8px;
+  margin-top: 16px;
+}

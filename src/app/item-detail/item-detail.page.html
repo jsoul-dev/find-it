@@ -1,13 +1,51 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>item-detail</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Item Details</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">item-detail</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding" [fullscreen]="true">
+  @if (item(); as currentItem) {
+    <ion-card>
+      <ion-card-header>
+        <div class="header-row">
+          <ion-card-title>{{ currentItem.name }}</ion-card-title>
+          <ion-badge [color]="currentItem.type === 'Lost' ? 'danger' : 'success'">
+            {{ currentItem.type }}
+          </ion-badge>
+        </div>
+        <ion-card-subtitle>
+          Status:
+          <ion-badge [color]="currentItem.status === 'Claimed' ? 'medium' : 'warning'">
+            {{ currentItem.status }}
+          </ion-badge>
+        </ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p class="description-text">{{ currentItem.description }}</p>
+        <p><strong>Contact:</strong> {{ currentItem.contact }}</p>
+        <p>
+          <strong>Coordinates:</strong>
+          {{ currentItem.lat.toFixed(5) }}, {{ currentItem.lng.toFixed(5) }}
+        </p>
+
+        @if (currentItem.status === 'Open') {
+          <div class="ion-margin-top">
+            <ion-button expand="block" color="success" (click)="markClaimed()">
+              <ion-icon slot="start" name="checkmark-circle"></ion-icon>
+              Mark as Claimed
+            </ion-button>
+          </div>
+        }
+      </ion-card-content>
+    </ion-card>
+
+    <div id="detail-map"></div>
+  } @else {
+    <p class="ion-text-center">Item not found.</p>
+  }
 </ion-content>
