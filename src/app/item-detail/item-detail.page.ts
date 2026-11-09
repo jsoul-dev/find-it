@@ -27,6 +27,7 @@ import {
 import { addIcons } from 'ionicons';
 import { checkmarkCircle } from 'ionicons/icons';
 import * as L from 'leaflet';
+import { Haptics, NotificationType } from '@capacitor/haptics';
 import { ItemService } from '../services/item';
 
 @Component({
@@ -107,15 +108,21 @@ export class ItemDetailPage implements OnInit, AfterViewInit {
 
     this.claiming.set(true);
     this.itemService.markClaimed(current).subscribe({
-      next: (updated) => {
+      next: async (updated) => {
+        try {
+          await Haptics.notification({ type: NotificationType.Success });
+        } catch {}
         this.claiming.set(false);
         this.itemService.items.update((list) =>
           list.map((i) => (i.id === updated.id ? updated : i))
         );
       },
-      error: (err) => {
+      error: async (err) => {
         console.error('PUT Error:', err);
         this.claiming.set(false);
+        try {
+          await Haptics.notification({ type: NotificationType.Error });
+        } catch {}
       },
     });
   }
