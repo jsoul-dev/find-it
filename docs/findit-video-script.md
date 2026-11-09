@@ -71,10 +71,11 @@
 > - The app fires a physical **Success Haptic vibration**, sends an HTTP POST request to our cloud REST API, and returns us to the Home screen.
 > - As you can see, our new item immediately appears at the top of the feed with its photo and coordinates intact!
 >
-> ### 6. Item Details & Claiming
+> ### 6. Item Details, Claiming & Report Deletion
 > Finally, tapping on the item card opens the **Item Detail** screen. 
 > - Here, users can view the full-resolution photograph, complete contact details, and a dedicated Leaflet map zoomed in on the item's location.
 > - When the rightful owner retrieves the calculator from the guard post, the guard taps **Mark as Claimed**. An HTTP PUT request updates the record in the cloud, changing the status badge to 'Claimed' and disabling further claim actions.
+> - If an entry is a test, duplicate, or needs removal, we also provide a **Delete Report** button with an `ion-alert` confirmation dialog. Confirming executes an HTTP DELETE request, purges local cache, vibrates with success haptics, and returns us to an updated feed.
 >
 > Now, `[Speaker 3 Name]` will dive into our technical architecture and core code implementation."
 
@@ -91,7 +92,7 @@
 > - **Ionic 9 with Angular Standalone:** We avoided legacy NgModules completely. We use standalone components, signals for reactive state, and the new Angular `@for` and `@if` template control flow.
 > - **Capacitor 8:** Bridges our native device capabilities (`@capacitor/geolocation`, `@capacitor/camera`, and `@capacitor/haptics`).
 > - **Leaflet 1.9:** Provides smooth, lightweight interactive maps using OpenStreetMap tiles.
-> - **MockAPI.io REST API:** Provides our persistent cloud backend via standard HTTP GET, POST, and PUT operations.
+> - **MockAPI.io REST API:** Provides our persistent cloud backend with complete RESTful CRUD operations—GET, POST, PUT, and DELETE.
 >
 > Let us highlight three key code implementations:
 >
@@ -127,7 +128,7 @@
 > ### Testing & Quality Assurance
 > To guarantee reliability, our team conducted comprehensive testing:
 > 1. **Manual Device Testing:** We executed a 10-point test matrix covering all core workflows—including clean data loading, offline airplane-mode error handling, input validation warnings, camera capture, GPS permissions, and PUT claim updates. All 10 test cases achieved a **Pass** status.
-> 2. **Automated Unit & E2E Testing:** In addition to physical phone testing, we configured automated unit tests via **Vitest** (6/6 passing) and E2E tests using **Playwright** (4/4 passing on a simulated Pixel 7 mobile viewport). These suites validate component lifecycle, service HTTP caching, live search filtering, dashboard metrics, and report submission forms.
+> 2. **Automated Unit & E2E Testing:** In addition to physical phone testing, we configured automated unit tests via **Vitest** (7/7 passing) and E2E tests using **Playwright** (4/4 passing on a simulated Pixel 7 mobile viewport). These suites validate component lifecycle, service HTTP caching and deletion, live search filtering, dashboard metrics, and report submission forms.
 >
 > ### Limitations & Future Improvements (CO4)
 > We also identified realistic limitations and future enhancements:

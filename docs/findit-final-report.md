@@ -80,7 +80,7 @@ The application is structured into three primary views:
 ### 3. Item Detail Page (`/item-detail/:id`)
 - **Full Metadata & Visuals:** Displays high-resolution item photograph, name, description, contact details, and status badge.
 - **Dedicated Location Map:** Renders a focused Leaflet map centered at the item's saved latitude and longitude, featuring a marker popup.
-- **Resolution Action:** For items with status `Open`, an authorized user or guard can tap **Mark as Claimed**, which issues an HTTP `PUT` request to update the status to `Claimed` in the cloud database.
+- **Lifecycle Management (Full RESTful CRUD):** For items with status `Open`, an authorized user or guard can tap **Mark as Claimed**, which issues an HTTP `PUT` request to update the status to `Claimed` in the cloud database. Obsolete, duplicate, or test entries can be removed via **Delete Report** (accessible via the top toolbar trash icon or outline danger button), issuing an HTTP `DELETE` request guarded by an `ion-alert` confirmation modal and tactile haptics.
 
 ---
 
@@ -214,6 +214,19 @@ export class ItemService {
   markClaimed(item: Item): Observable<Item> {
     return this.http.put<Item>(`${this.url}/${item.id}`, { ...item, status: 'Claimed' });
   }
+
+  deleteItem(id: string): Observable<Item> {
+    return this.http.delete<Item>(`${this.url}/${id}`).pipe(
+      tap(() => {
+        this.items.update((prev) => prev.filter((item) => item.id !== id));
+        try {
+          localStorage.removeItem(`findit_photo_${id}`);
+        } catch (e) {
+          void e;
+        }
+      }),
+    );
+  }
 }
 ```
 
@@ -235,9 +248,12 @@ export class ItemService {
 | 8 | **Submit valid item with photo (POST)** | Success haptic vibrates; item added to API with local photo cache | Success haptic fired; routed to Home; new item appears with photo thumbnail | **Pass** |
 | 9 | **Open Item Detail page** | Details, attached photo, and focused Leaflet map marker display | Full photo, metadata, and map centered on exact coordinates loaded | **Pass** |
 | 10 | **Mark as Claimed (PUT)** | Status badge updates to "Claimed" and Claim button disappears | Status updated on cloud API and UI badge changed to Claimed immediately | **Pass** |
+| 11 | **Delete Report (DELETE)** | Confirmation modal opens; confirming purges item and navigates to Home | Alert presented; on confirm, item deleted from MockAPI, success toast shown, list refreshed | **Pass** |
 
-### Automated End-to-End (E2E) Test Suite (Playwright)
-In addition to physical device verification, an automated Playwright test suite (`npm run test:e2e`) executes in a simulated mobile Chrome environment (`Pixel 7` viewport):
+### Automated Unit & End-to-End (E2E) Test Suites
+In addition to physical device verification, automated test suites validate application stability:
+- **Vitest Unit Tests (`npm run test:unit`):** 7/7 passing unit test suites validating `ItemService` (GET, POST, PUT, DELETE, and reactive signal state updates), `ItemDetailPage`, `PostItemPage`, `HomePage`, and `ItemCardComponent`.
+- **Playwright E2E Tests (`npm run test:e2e`):** 4/4 passing tests executed in a simulated mobile Chrome environment (`Pixel 7` viewport):
 - **Test 1:** Verifies Home screen header and all 4 segment buttons (`All`, `Lost`, `Found`, `Claimed`).
 - **Test 2:** Verifies the Leaflet campus map container (`#map`) mounts and renders.
 - **Test 3:** Verifies `/post-item` form cards, photo button, GPS locate trigger, and submit button.
