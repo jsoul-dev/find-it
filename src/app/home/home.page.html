@@ -14,4 +14,10 @@
       <app-item-card [item]="item" (open)="goTo($event)" />
     }
   }
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button routerLink="/post-item">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

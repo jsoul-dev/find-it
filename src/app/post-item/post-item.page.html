@@ -1,13 +1,55 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>post-item</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Post Item</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">post-item</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding" [fullscreen]="true">
+  <ion-item>
+    <ion-select [(ngModel)]="type" label="Report Type" labelPlacement="stacked">
+      <ion-select-option value="Lost">Lost</ion-select-option>
+      <ion-select-option value="Found">Found</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-input
+      [(ngModel)]="name"
+      label="Item Name"
+      labelPlacement="floating"
+      placeholder="e.g. Blue Hydroflask"
+    ></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-textarea
+      [(ngModel)]="description"
+      label="Description"
+      labelPlacement="floating"
+      placeholder="e.g. Scratched near lid, left in Lab 3"
+      [autoGrow]="true"
+    ></ion-textarea>
+  </ion-item>
+
+  <ion-item>
+    <ion-input
+      [(ngModel)]="contact"
+      label="Contact Information"
+      labelPlacement="floating"
+      placeholder="e.g. Phone number, email, or room"
+    ></ion-input>
+  </ion-item>
+
+  @if (formError()) {
+    <ion-text color="danger">
+      <p class="ion-padding-start">{{ formError() }}</p>
+    </ion-text>
+  }
+
+  <div class="ion-margin-top">
+    <ion-button expand="block" (click)="submit()">Submit Report</ion-button>
+  </div>
 </ion-content>
