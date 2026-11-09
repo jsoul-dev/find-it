@@ -96,6 +96,14 @@
     </div>
   </div>
 
+  <div class="section-divider" role="separator" aria-label="Campus belongings reports">
+    <div class="divider-title">
+      <ion-icon name="list-outline" class="divider-icon"></ion-icon>
+      <span>Campus Reports</span>
+    </div>
+    <span class="divider-badge">{{ filtered().length }} {{ filtered().length === 1 ? 'item' : 'items' }}</span>
+  </div>
+
   @if (loading()) {
   <div class="state-container">
     <ion-spinner name="crescent" color="primary"></ion-spinner>
