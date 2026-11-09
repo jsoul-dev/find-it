@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, AfterViewInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import {
@@ -14,8 +14,13 @@ import {
   IonSelect,
   IonSelectOption,
   IonButton,
+  IonIcon,
   IonText,
 } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { locate } from 'ionicons/icons';
+import * as L from 'leaflet';
+import { Geolocation } from '@capacitor/geolocation';
 import { ItemService } from '../services/item';
 
 @Component({
@@ -36,24 +41,74 @@ import { ItemService } from '../services/item';
     IonSelect,
     IonSelectOption,
     IonButton,
+    IonIcon,
     IonText,
   ],
 })
-export class PostItemPage {
+export class PostItemPage implements AfterViewInit {
   private itemService = inject(ItemService);
   private router = inject(Router);
+  private map!: L.Map;
+  private locationMarker?: L.CircleMarker;
 
   type: 'Lost' | 'Found' = 'Lost';
   name = '';
   description = '';
   contact = '';
-  lat = signal<number | null>(15.65588);
-  lng = signal<number | null>(121.039818);
+  lat = signal<number | null>(null);
+  lng = signal<number | null>(null);
   formError = signal<string>('');
 
+  constructor() {
+    addIcons({ locate });
+  }
+
+  ngAfterViewInit(): void {
+    this.initMap();
+  }
+
+  private initMap(): void {
+    this.map = L.map('new-map').setView([15.65588, 121.039818], 15);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors',
+    }).addTo(this.map);
+    setTimeout(() => this.map.invalidateSize(), 200);
+
+    this.map.on('click', (e: L.LeafletMouseEvent) => {
+      this.updateMarker(e.latlng.lat, e.latlng.lng);
+    });
+  }
+
+  private updateMarker(lat: number, lng: number): void {
+    this.lat.set(lat);
+    this.lng.set(lng);
+    if (this.locationMarker) {
+      this.locationMarker.setLatLng([lat, lng]);
+    } else {
+      this.locationMarker = L.circleMarker([lat, lng])
+        .addTo(this.map)
+        .bindPopup('Item Location')
+        .openPopup();
+    }
+  }
+
+  async locateMe(): Promise<void> {
+    try {
+      const position = await Geolocation.getCurrentPosition();
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      this.map.setView([lat, lng], 17);
+      this.updateMarker(lat, lng);
+      this.formError.set('');
+    } catch {
+      this.formError.set('Could not access current location. Please check GPS permissions or tap the map.');
+    }
+  }
+
   submit(): void {
-    if (!this.name.trim() || !this.contact.trim()) {
-      this.formError.set('Please fill in the item name and contact details.');
+    if (!this.name.trim() || !this.contact.trim() || this.lat() === null || this.lng() === null) {
+      this.formError.set('Please fill in the item name, contact, and pick a location on the map.');
       return;
     }
 
@@ -63,8 +118,8 @@ export class PostItemPage {
       name: this.name.trim(),
       description: this.description.trim(),
       contact: this.contact.trim(),
-      lat: this.lat() ?? 15.65588,
-      lng: this.lng() ?? 121.039818,
+      lat: this.lat()!,
+      lng: this.lng()!,
       status: 'Open',
     });
 

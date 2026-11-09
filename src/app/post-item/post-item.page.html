@@ -43,6 +43,21 @@
     ></ion-input>
   </ion-item>
 
+  <div class="ion-margin-top ion-margin-bottom">
+    <ion-button expand="block" fill="outline" (click)="locateMe()">
+      <ion-icon slot="start" name="locate"></ion-icon>
+      Locate Me
+    </ion-button>
+  </div>
+
+  <div id="new-map"></div>
+
+  @if (lat() !== null && lng() !== null) {
+    <p class="ion-text-center">
+      Selected Location: {{ lat()!.toFixed(5) }}, {{ lng()!.toFixed(5) }}
+    </p>
+  }
+
   @if (formError()) {
     <ion-text color="danger">
       <p class="ion-padding-start">{{ formError() }}</p>
