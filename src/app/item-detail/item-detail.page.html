@@ -35,9 +35,14 @@
 
         @if (currentItem.status === 'Open') {
           <div class="ion-margin-top">
-            <ion-button expand="block" color="success" (click)="markClaimed()">
+            <ion-button
+              expand="block"
+              color="success"
+              (click)="markClaimed()"
+              [disabled]="claiming()"
+            >
               <ion-icon slot="start" name="checkmark-circle"></ion-icon>
-              Mark as Claimed
+              {{ claiming() ? 'Updating...' : 'Mark as Claimed' }}
             </ion-button>
           </div>
         }

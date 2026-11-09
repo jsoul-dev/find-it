@@ -23,7 +23,19 @@
 <ion-content class="ion-padding" [fullscreen]="true">
   <div id="map"></div>
 
-  @if (filtered().length === 0) {
+  @if (loading()) {
+    <div class="state-container">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading campus items...</p>
+    </div>
+  } @else if (error()) {
+    <div class="state-container">
+      <p class="error-text">{{ error() }}</p>
+      <ion-button fill="outline" color="primary" (click)="retry()">
+        Retry
+      </ion-button>
+    </div>
+  } @else if (filtered().length === 0) {
     <p class="ion-text-center ion-padding-top">No items match this filter.</p>
   } @else {
     @for (item of filtered(); track item.id) {

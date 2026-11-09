@@ -1,9 +1,12 @@
 import {
   Component,
+  OnInit,
   AfterViewInit,
   inject,
   input,
   computed,
+  signal,
+  effect,
 } from '@angular/core';
 import {
   IonHeader,
@@ -47,11 +50,12 @@ import { ItemService } from '../services/item';
     IonIcon,
   ],
 })
-export class ItemDetailPage implements AfterViewInit {
+export class ItemDetailPage implements OnInit, AfterViewInit {
   private itemService = inject(ItemService);
   private map?: L.Map;
 
   id = input<string>();
+  claiming = signal<boolean>(false);
 
   item = computed(() => {
     const currentId = this.id();
@@ -60,6 +64,19 @@ export class ItemDetailPage implements AfterViewInit {
 
   constructor() {
     addIcons({ checkmarkCircle });
+
+    effect(() => {
+      const current = this.item();
+      if (current && !this.map) {
+        setTimeout(() => this.initMap(current.lat, current.lng, current.name), 100);
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    if (this.itemService.items().length === 0) {
+      this.itemService.fetchItems();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -70,7 +87,8 @@ export class ItemDetailPage implements AfterViewInit {
   }
 
   private initMap(lat: number, lng: number, title: string): void {
-    if (this.map) return;
+    const container = document.getElementById('detail-map');
+    if (!container || this.map) return;
     this.map = L.map('detail-map').setView([lat, lng], 17);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -85,8 +103,20 @@ export class ItemDetailPage implements AfterViewInit {
 
   markClaimed(): void {
     const current = this.item();
-    if (current) {
-      this.itemService.markClaimed(current);
-    }
+    if (!current) return;
+
+    this.claiming.set(true);
+    this.itemService.markClaimed(current).subscribe({
+      next: (updated) => {
+        this.claiming.set(false);
+        this.itemService.items.update((list) =>
+          list.map((i) => (i.id === updated.id ? updated : i))
+        );
+      },
+      error: (err) => {
+        console.error('PUT Error:', err);
+        this.claiming.set(false);
+      },
+    });
   }
 }
