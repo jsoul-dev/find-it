@@ -245,10 +245,16 @@ In addition to physical device verification, an automated Playwright test suite 
 3. **Payload Compression Trade-off:** To conform to MockAPI request body limits, photos are compressed to 400px width. While suitable for identification, very fine text on small lost items may require higher resolution.
 
 ### Proposed Improvements (CO4)
-1. **Dedicated Cloud Storage (Firebase Storage / AWS S3):** Upload original high-resolution photos to dedicated cloud storage buckets and save immutable image URLs to the database.
-2. **Firebase Authentication / JWT:** Implement student authentication using official school email credentials (`@neust.edu.ph`) to prevent unauthorized posts.
-3. **Push Notifications via Cloud Messaging:** Notify registered users when a new item matching a category or keyword is reported found near their department.
-4. **Offline Map Storage:** Cache Vector/Raster map tiles locally using SQLite or IndexedDB to enable full offline map browsing.
+
+> **Note on Prototype Scope:** The original assignment brief listed *Photo Attachment* under suggested future improvements (CO4). Our team proactively prioritized and implemented native Camera capture (`@capacitor/camera`) directly into this working prototype.
+
+For subsequent iterations and production deployment, we propose the following usability and architectural improvements:
+1. **Confirmation Dialog Before Resolve:** Present an `ion-alert` confirmation modal before executing the "Mark as Claimed" HTTP PUT request to avoid accidental clicks.
+2. **Dedicated Cloud Object Storage (Firebase Storage / AWS S3):** Transition from the current hybrid local-first base64 storage to dedicated cloud object storage buckets, storing immutable image URLs in the database.
+3. **Push Notifications via Capacitor Push / FCM:** Automatically dispatch push notifications to students when an item matching a keyword or category is reported found near their department.
+4. **Authentication & Restricted CORS:** Integrate institutional Google Single Sign-On restricted to `@neust.edu.ph` student accounts, ensuring only verified campus occupants can post or claim items.
+5. **Offline Map Tile Caching:** Cache OpenStreetMap tiles locally via IndexedDB or SQLite so the campus map remains fully navigable without mobile data.
+6. **Pagination / Infinite Scroll:** Implement `ion-infinite-scroll` on the Home screen feed to optimize performance when the campus registry scales to hundreds of active reports.
 
 ---
 
