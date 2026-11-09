@@ -13,11 +13,10 @@
 ### Group Members and Assigned Roles
 | Member Name | Student ID | Assigned Project Role | Specific Contributions |
 |---|---|---|---|
-| `[Student 1 Name]` | `[Student ID]` | Project Lead & UI/UX Specialist | UI layout, component tree, Angular signals & filter architecture |
-| `[Student 2 Name]` | `[Student ID]` | Mobile Capabilities Developer | Capacitor Geolocation, Leaflet map integration & Haptics |
-| `[Student 3 Name]` | `[Student ID]` | Native Device & Hardware Engineer | Capacitor Camera capture, local-first image persistence & permissions |
-| `[Student 4 Name]` | `[Student ID]` | REST API & Data Integration Engineer | MockAPI schema setup, HttpClient integration, loading/error states |
-| `[Student 5 Name]` | `[Student ID]` | Quality Assurance & Documentation | Test table execution, Android Studio APK build & report documentation |
+| `[Student 1 Name]` | `[Student ID]` | Project Lead & UI/UX Specialist | Project coordination, UI layout, component tree, Angular signals & filter architecture |
+| `[Student 2 Name]` | `[Student ID]` | Mobile Capabilities Developer | Capacitor Geolocation, Leaflet map integration, GPS pinpointing & Haptics |
+| `[Student 3 Name]` | `[Student ID]` | Native Device & Hardware Engineer | Capacitor Camera capture, local-first image persistence, Android permissions & APK builds |
+| `[Student 4 Name]` | `[Student ID]` | Backend Integration & QA Specialist | MockAPI schema setup, HttpClient integration, Playwright E2E automation & report documentation |
 
 ---
 
