@@ -1,8 +1,8 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>FindIt</ion-title>
   </ion-toolbar>
-  <ion-toolbar>
+  <ion-toolbar color="light">
     <ion-segment [value]="filter()" (ionChange)="setFilter($event)">
       <ion-segment-button value="All">
         <ion-label>All</ion-label>
@@ -21,30 +21,39 @@
 </ion-header>
 
 <ion-content class="ion-padding" [fullscreen]="true">
-  <div id="map"></div>
+  <div class="map-card-wrapper">
+    <div class="map-card-header">
+      <span class="map-caption">Campus Overview</span>
+    </div>
+    <div id="map"></div>
+  </div>
 
   @if (loading()) {
     <div class="state-container">
-      <ion-spinner name="crescent"></ion-spinner>
-      <p>Loading campus items...</p>
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p class="state-text">Loading campus items...</p>
     </div>
   } @else if (error()) {
-    <div class="state-container">
+    <div class="state-container error-box">
       <p class="error-text">{{ error() }}</p>
       <ion-button fill="outline" color="primary" (click)="retry()">
-        Retry
+        Retry Connection
       </ion-button>
     </div>
   } @else if (filtered().length === 0) {
-    <p class="ion-text-center ion-padding-top">No items match this filter.</p>
+    <div class="state-container empty-box">
+      <p class="state-text">No items match the selected filter.</p>
+    </div>
   } @else {
-    @for (item of filtered(); track item.id) {
-      <app-item-card [item]="item" (open)="goTo($event)" />
-    }
+    <div class="items-list-wrapper">
+      @for (item of filtered(); track item.id) {
+        <app-item-card [item]="item" (open)="goTo($event)" />
+      }
+    </div>
   }
 
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-    <ion-fab-button routerLink="/post-item">
+    <ion-fab-button routerLink="/post-item" color="primary">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

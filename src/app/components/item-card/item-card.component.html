@@ -1,23 +1,31 @@
-<ion-card (click)="onSelect()" [button]="true">
+<ion-card (click)="onSelect()" [button]="true" class="findit-card">
   @if (photoUrl) {
-    <ion-img [src]="photoUrl" alt="Item photo" class="card-thumbnail"></ion-img>
+    <div class="thumbnail-wrapper">
+      <ion-img [src]="photoUrl" alt="Item photo" class="card-thumbnail"></ion-img>
+    </div>
   }
   <ion-card-header>
     <div class="card-header-row">
-      <ion-card-title>{{ item().name }}</ion-card-title>
+      <ion-card-title class="card-title">{{ item().name }}</ion-card-title>
       <ion-badge [color]="item().type === 'Lost' ? 'danger' : 'success'">
         {{ item().type }}
       </ion-badge>
     </div>
-    <ion-card-subtitle>
-      Status:
-      <ion-badge [color]="item().status === 'Claimed' ? 'medium' : 'warning'">
+    <div class="status-row">
+      <span class="status-label">Status:</span>
+      <ion-badge
+        [color]="item().status === 'Claimed' ? 'medium' : 'warning'"
+        class="status-badge"
+      >
         {{ item().status }}
       </ion-badge>
-    </ion-card-subtitle>
+    </div>
   </ion-card-header>
   <ion-card-content>
-    <p>{{ item().description }}</p>
-    <p><strong>Contact:</strong> {{ item().contact }}</p>
+    <p class="description-text">{{ item().description }}</p>
+    <div class="contact-box">
+      <span class="contact-label">Contact:</span>
+      <span class="contact-value">{{ item().contact }}</span>
+    </div>
   </ion-card-content>
 </ion-card>

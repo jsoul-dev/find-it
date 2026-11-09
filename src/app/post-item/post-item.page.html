@@ -1,89 +1,134 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
+      <ion-back-button defaultHref="/home" color="light"></ion-back-button>
     </ion-buttons>
-    <ion-title>Post Item</ion-title>
+    <ion-title>Report Lost or Found</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding" [fullscreen]="true">
-  <ion-item>
-    <ion-select [(ngModel)]="type" label="Report Type" labelPlacement="stacked">
-      <ion-select-option value="Lost">Lost</ion-select-option>
-      <ion-select-option value="Found">Found</ion-select-option>
-    </ion-select>
-  </ion-item>
+  <div class="form-container">
+    <div class="form-card">
+      <div class="section-title">Item Information</div>
+      <ion-item lines="none" class="custom-item">
+        <ion-select
+          [(ngModel)]="type"
+          label="Report Category"
+          labelPlacement="stacked"
+          fill="outline"
+        >
+          <ion-select-option value="Lost">Lost Item</ion-select-option>
+          <ion-select-option value="Found">Found Item</ion-select-option>
+        </ion-select>
+      </ion-item>
 
-  <ion-item>
-    <ion-input
-      [(ngModel)]="name"
-      label="Item Name"
-      labelPlacement="floating"
-      placeholder="e.g. Blue Hydroflask"
-    ></ion-input>
-  </ion-item>
+      <ion-item lines="none" class="custom-item">
+        <ion-input
+          [(ngModel)]="name"
+          label="Item Name"
+          labelPlacement="stacked"
+          fill="outline"
+          placeholder="e.g. Scientific Calculator"
+        ></ion-input>
+      </ion-item>
 
-  <ion-item>
-    <ion-textarea
-      [(ngModel)]="description"
-      label="Description"
-      labelPlacement="floating"
-      placeholder="e.g. Scratched near lid, left in Lab 3"
-      [autoGrow]="true"
-    ></ion-textarea>
-  </ion-item>
+      <ion-item lines="none" class="custom-item">
+        <ion-textarea
+          [(ngModel)]="description"
+          label="Item Description"
+          labelPlacement="stacked"
+          fill="outline"
+          placeholder="Provide specific identifiers (color, scratches, stickers, where left)..."
+          [autoGrow]="true"
+        ></ion-textarea>
+      </ion-item>
 
-  <ion-item>
-    <ion-input
-      [(ngModel)]="contact"
-      label="Contact Information"
-      labelPlacement="floating"
-      placeholder="e.g. Phone number, email, or room"
-    ></ion-input>
-  </ion-item>
+      <ion-item lines="none" class="custom-item">
+        <ion-input
+          [(ngModel)]="contact"
+          label="Your Contact Details"
+          labelPlacement="stacked"
+          fill="outline"
+          placeholder="e.g. 0917-000-0000 or Guard Post"
+        ></ion-input>
+      </ion-item>
+    </div>
 
-  <div class="photo-section ion-margin-top ion-margin-bottom">
-    @if (photo()) {
-      <div class="preview-wrapper">
-        <ion-img [src]="photo()!" alt="Attached item photo" class="photo-preview"></ion-img>
-        <ion-button color="danger" fill="outline" size="small" (click)="removePhoto()">
-          <ion-icon slot="start" name="trash"></ion-icon>
-          Remove Photo
-        </ion-button>
+    <div class="form-card">
+      <div class="section-title">Visual Evidence</div>
+      <div class="photo-section">
+        @if (photo()) {
+          <div class="preview-wrapper">
+            <ion-img
+              [src]="photo()!"
+              alt="Attached item photo"
+              class="photo-preview"
+            ></ion-img>
+            <ion-button
+              color="danger"
+              fill="clear"
+              size="small"
+              (click)="removePhoto()"
+            >
+              <ion-icon slot="start" name="trash"></ion-icon>
+              Remove Photo
+            </ion-button>
+          </div>
+        } @else {
+          <ion-button
+            expand="block"
+            fill="outline"
+            color="primary"
+            (click)="takePhoto()"
+          >
+            <ion-icon slot="start" name="camera"></ion-icon>
+            Take or Choose Photo
+          </ion-button>
+        }
       </div>
-    } @else {
-      <ion-button expand="block" fill="outline" color="secondary" (click)="takePhoto()">
-        <ion-icon slot="start" name="camera"></ion-icon>
-        Attach Item Photo
+    </div>
+
+    <div class="form-card">
+      <div class="section-title">Location Pin</div>
+      <p class="map-helper">
+        Tap the button to pinpoint via GPS, or tap the map directly.
+      </p>
+      <ion-button
+        expand="block"
+        fill="outline"
+        color="secondary"
+        (click)="locateMe()"
+      >
+        <ion-icon slot="start" name="locate"></ion-icon>
+        Locate Me via GPS
       </ion-button>
+
+      <div id="new-map"></div>
+
+      @if (lat() !== null && lng() !== null) {
+        <div class="coord-pill">
+          <span>Pinned: {{ lat()!.toFixed(5) }}, {{ lng()!.toFixed(5) }}</span>
+        </div>
+      }
+    </div>
+
+    @if (formError()) {
+      <div class="form-error-banner">
+        <p>{{ formError() }}</p>
+      </div>
     }
-  </div>
 
-  <div class="ion-margin-bottom">
-    <ion-button expand="block" fill="outline" (click)="locateMe()">
-      <ion-icon slot="start" name="locate"></ion-icon>
-      Locate Me
-    </ion-button>
-  </div>
-
-  <div id="new-map"></div>
-
-  @if (lat() !== null && lng() !== null) {
-    <p class="ion-text-center">
-      Selected Location: {{ lat()!.toFixed(5) }}, {{ lng()!.toFixed(5) }}
-    </p>
-  }
-
-  @if (formError()) {
-    <ion-text color="danger">
-      <p class="ion-padding-start">{{ formError() }}</p>
-    </ion-text>
-  }
-
-  <div class="ion-margin-top">
-    <ion-button expand="block" (click)="submit()" [disabled]="submitting()">
-      {{ submitting() ? 'Submitting...' : 'Submit Report' }}
-    </ion-button>
+    <div class="submit-wrapper">
+      <ion-button
+        expand="block"
+        color="primary"
+        (click)="submit()"
+        [disabled]="submitting()"
+        class="submit-btn"
+      >
+        {{ submitting() ? 'Submitting Report...' : 'Submit Report' }}
+      </ion-button>
+    </div>
   </div>
 </ion-content>
