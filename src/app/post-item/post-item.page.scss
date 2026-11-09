@@ -23,11 +23,11 @@
   margin-bottom: 12px;
 }
 
-.custom-item {
-  --padding-start: 0;
-  --padding-end: 0;
-  --inner-padding-end: 0;
-  margin-bottom: 14px;
+.form-control {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 16px;
+  --highlight-color-focused: var(--ion-color-primary);
 }
 
 .photo-section {
