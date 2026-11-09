@@ -15,6 +15,7 @@ import {
   IonLabel,
   IonSpinner,
   IonButton,
+  IonSearchbar,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
@@ -48,6 +49,7 @@ import { ItemService } from '../services/item';
     IonLabel,
     IonSpinner,
     IonButton,
+    IonSearchbar,
     ItemCardComponent,
   ],
 })
@@ -60,6 +62,7 @@ export class HomePage implements OnInit, AfterViewInit {
   loading = this.itemService.loading;
   error = this.itemService.error;
   filter = signal<'All' | 'Lost' | 'Found' | 'Claimed'>('All');
+  searchQuery = signal<string>('');
   showMap = signal<boolean>(false);
 
   totalCount = computed(() => this.items().length);
@@ -69,14 +72,25 @@ export class HomePage implements OnInit, AfterViewInit {
 
   filtered = computed(() => {
     const currentFilter = this.filter();
-    const all = this.items();
-    if (currentFilter === 'All') {
-      return all;
-    }
+    const query = this.searchQuery().toLowerCase();
+    let result = this.items();
+
     if (currentFilter === 'Claimed') {
-      return all.filter((i) => i.status === 'Claimed');
+      result = result.filter((i) => i.status === 'Claimed');
+    } else if (currentFilter !== 'All') {
+      result = result.filter((i) => i.type === currentFilter && i.status !== 'Claimed');
     }
-    return all.filter((i) => i.type === currentFilter && i.status !== 'Claimed');
+
+    if (query) {
+      result = result.filter(
+        (i) =>
+          i.name.toLowerCase().includes(query) ||
+          i.description.toLowerCase().includes(query) ||
+          i.contact.toLowerCase().includes(query),
+      );
+    }
+
+    return result;
   });
 
   constructor() {
@@ -124,6 +138,15 @@ export class HomePage implements OnInit, AfterViewInit {
     if (value) {
       this.filter.set(value);
     }
+  }
+
+  onSearch(event: CustomEvent): void {
+    const val = (event.detail?.value as string) || '';
+    this.searchQuery.set(val.trim());
+  }
+
+  clearSearch(): void {
+    this.searchQuery.set('');
   }
 
   setFilterValue(category: 'All' | 'Lost' | 'Found' | 'Claimed'): void {
