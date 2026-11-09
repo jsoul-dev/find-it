@@ -1,7 +1,9 @@
 import type { OnInit, AfterViewInit } from '@angular/core';
 import { Component, inject, input, computed, signal, effect } from '@angular/core';
+import { Router } from '@angular/router';
 import { Haptics, NotificationType } from '@capacitor/haptics';
 import {
+  AlertController,
   IonHeader,
   IonToolbar,
   IonTitle,
@@ -15,9 +17,10 @@ import {
   IonCardContent,
   IonButton,
   IonIcon,
+  ToastController,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { checkmarkCircle } from 'ionicons/icons';
+import { checkmarkCircle, trashOutline } from 'ionicons/icons';
 import * as L from 'leaflet';
 
 import { ItemService } from '../services/item';
@@ -44,10 +47,14 @@ import { ItemService } from '../services/item';
 })
 export class ItemDetailPage implements OnInit, AfterViewInit {
   private itemService = inject(ItemService);
+  private alertCtrl = inject(AlertController);
+  private toastCtrl = inject(ToastController);
+  private router = inject(Router);
   private map?: L.Map;
 
   id = input<string>();
   claiming = signal<boolean>(false);
+  deleting = signal<boolean>(false);
 
   item = computed(() => {
     const currentId = this.id();
@@ -60,7 +67,7 @@ export class ItemDetailPage implements OnInit, AfterViewInit {
   }
 
   constructor() {
-    addIcons({ checkmarkCircle });
+    addIcons({ checkmarkCircle, trashOutline });
 
     effect(() => {
       const current = this.item();
@@ -118,6 +125,69 @@ export class ItemDetailPage implements OnInit, AfterViewInit {
         } catch (e) {
           void e;
         }
+      },
+    });
+  }
+
+  async confirmDelete(): Promise<void> {
+    const current = this.item();
+    if (!current) return;
+
+    const alert = await this.alertCtrl.create({
+      header: 'Delete Report',
+      message: `Are you sure you want to delete "${current.name}"? This action cannot be undone.`,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: () => {
+            this.deleteItem(current.id);
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  private deleteItem(id: string): void {
+    this.deleting.set(true);
+    this.itemService.deleteItem(id).subscribe({
+      next: async () => {
+        this.deleting.set(false);
+        try {
+          await Haptics.notification({ type: NotificationType.Success });
+        } catch (e) {
+          void e;
+        }
+        const toast = await this.toastCtrl.create({
+          message: 'Report deleted successfully.',
+          duration: 2000,
+          color: 'success',
+          position: 'bottom',
+        });
+        await toast.present();
+        this.router.navigate(['/home']);
+      },
+      error: async (err) => {
+        console.error('DELETE Error:', err);
+        this.deleting.set(false);
+        try {
+          await Haptics.notification({ type: NotificationType.Error });
+        } catch (e) {
+          void e;
+        }
+        const toast = await this.toastCtrl.create({
+          message: 'Could not delete item. Please try again.',
+          duration: 2500,
+          color: 'danger',
+          position: 'bottom',
+        });
+        await toast.present();
       },
     });
   }

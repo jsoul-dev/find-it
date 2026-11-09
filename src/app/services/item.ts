@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Haptics, NotificationType } from '@capacitor/haptics';
 import type { Observable } from 'rxjs';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import type { Item, NewItem } from '../models/item';
@@ -61,6 +61,19 @@ export class ItemService {
       ...item,
       status: 'Claimed',
     });
+  }
+
+  deleteItem(id: string): Observable<Item> {
+    return this.http.delete<Item>(`${this.url}/${id}`).pipe(
+      tap(() => {
+        this.items.update((prev) => prev.filter((item) => item.id !== id));
+        try {
+          localStorage.removeItem(`findit_photo_${id}`);
+        } catch (e) {
+          void e;
+        }
+      }),
+    );
   }
 
   getById(id: string): Item | undefined {

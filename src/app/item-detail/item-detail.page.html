@@ -4,6 +4,18 @@
       <ion-back-button defaultHref="/home" color="light"></ion-back-button>
     </ion-buttons>
     <ion-title>Item Details</ion-title>
+    @if (item()) {
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="confirmDelete()"
+        [disabled]="deleting() || claiming()"
+        color="light"
+        aria-label="Delete Report"
+      >
+        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    }
   </ion-toolbar>
 </ion-header>
 
@@ -50,12 +62,32 @@
 
         @if (currentItem.status === 'Open') {
         <div class="action-wrapper">
-          <ion-button expand="block" color="success" (click)="markClaimed()" [disabled]="claiming()" class="claim-btn">
+          <ion-button
+            expand="block"
+            color="success"
+            (click)="markClaimed()"
+            [disabled]="claiming() || deleting()"
+            class="claim-btn"
+          >
             <ion-icon slot="start" name="checkmark-circle"></ion-icon>
             {{ claiming() ? 'Updating Status...' : 'Mark as Claimed' }}
           </ion-button>
         </div>
         }
+
+        <div class="delete-wrapper">
+          <ion-button
+            expand="block"
+            fill="outline"
+            color="danger"
+            (click)="confirmDelete()"
+            [disabled]="deleting() || claiming()"
+            class="delete-btn"
+          >
+            <ion-icon slot="start" name="trash-outline"></ion-icon>
+            {{ deleting() ? 'Deleting Report...' : 'Delete Report' }}
+          </ion-button>
+        </div>
       </ion-card-content>
     </ion-card>
 

@@ -99,6 +99,16 @@
   height: 48px;
 }
 
+.delete-wrapper {
+  margin-top: 12px;
+}
+
+.delete-btn {
+  --border-radius: 10px;
+  font-weight: 600;
+  height: 44px;
+}
+
 .map-card {
   background: var(--ion-card-background, #ffffff);
   border-radius: 14px;
