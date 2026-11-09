@@ -1,11 +1,5 @@
-import {
-  Component,
-  OnInit,
-  AfterViewInit,
-  inject,
-  signal,
-  computed,
-} from '@angular/core';
+import type { OnInit, AfterViewInit } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import {
   IonHeader,
@@ -24,8 +18,9 @@ import {
 import { addIcons } from 'ionicons';
 import { add } from 'ionicons/icons';
 import * as L from 'leaflet';
-import { ItemService } from '../services/item';
+
 import { ItemCardComponent } from '../components/item-card/item-card.component';
+import { ItemService } from '../services/item';
 
 @Component({
   selector: 'app-home',

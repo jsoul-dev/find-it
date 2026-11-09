@@ -13,10 +13,7 @@
     </div>
     <div class="status-row">
       <span class="status-label">Status:</span>
-      <ion-badge
-        [color]="item().status === 'Claimed' ? 'medium' : 'warning'"
-        class="status-badge"
-      >
+      <ion-badge [color]="item().status === 'Claimed' ? 'medium' : 'warning'" class="status-badge">
         {{ item().status }}
       </ion-badge>
     </div>

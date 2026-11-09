@@ -9,85 +9,66 @@
 
 <ion-content class="ion-padding" [fullscreen]="true">
   @if (item(); as currentItem) {
-    <div class="detail-container">
-      <ion-card class="detail-card">
-        @if (photoUrl) {
-          <div class="hero-image-wrapper">
-            <ion-img
-              [src]="photoUrl"
-              alt="Item photo"
-              class="detail-photo"
-            ></ion-img>
-          </div>
-        }
-
-        <ion-card-header>
-          <div class="header-row">
-            <ion-card-title class="detail-title">
-              {{ currentItem.name }}
-            </ion-card-title>
-            <ion-badge
-              [color]="currentItem.type === 'Lost' ? 'danger' : 'success'"
-              class="type-badge"
-            >
-              {{ currentItem.type }}
-            </ion-badge>
-          </div>
-          <div class="status-row">
-            <span class="status-label">Current Status:</span>
-            <ion-badge
-              [color]="currentItem.status === 'Claimed' ? 'medium' : 'warning'"
-            >
-              {{ currentItem.status }}
-            </ion-badge>
-          </div>
-        </ion-card-header>
-
-        <ion-card-content>
-          <div class="content-block">
-            <div class="block-label">Description</div>
-            <p class="description-text">{{ currentItem.description }}</p>
-          </div>
-
-          <div class="content-block contact-card">
-            <div class="block-label">Contact Person / Post</div>
-            <p class="contact-text">{{ currentItem.contact }}</p>
-          </div>
-
-          <div class="content-block">
-            <div class="block-label">Reported Coordinates</div>
-            <p class="coords-text">
-              {{ currentItem.lat.toFixed(5) }}, {{ currentItem.lng.toFixed(5) }}
-            </p>
-          </div>
-
-          @if (currentItem.status === 'Open') {
-            <div class="action-wrapper">
-              <ion-button
-                expand="block"
-                color="success"
-                (click)="markClaimed()"
-                [disabled]="claiming()"
-                class="claim-btn"
-              >
-                <ion-icon slot="start" name="checkmark-circle"></ion-icon>
-                {{ claiming() ? 'Updating Status...' : 'Mark as Claimed' }}
-              </ion-button>
-            </div>
-          }
-        </ion-card-content>
-      </ion-card>
-
-      <div class="map-card">
-        <div class="map-header">
-          <span>Pinned Location on Campus</span>
-        </div>
-        <div id="detail-map"></div>
+  <div class="detail-container">
+    <ion-card class="detail-card">
+      @if (photoUrl) {
+      <div class="hero-image-wrapper">
+        <ion-img [src]="photoUrl" alt="Item photo" class="detail-photo"></ion-img>
       </div>
+      }
+
+      <ion-card-header>
+        <div class="header-row">
+          <ion-card-title class="detail-title"> {{ currentItem.name }} </ion-card-title>
+          <ion-badge [color]="currentItem.type === 'Lost' ? 'danger' : 'success'" class="type-badge">
+            {{ currentItem.type }}
+          </ion-badge>
+        </div>
+        <div class="status-row">
+          <span class="status-label">Current Status:</span>
+          <ion-badge [color]="currentItem.status === 'Claimed' ? 'medium' : 'warning'">
+            {{ currentItem.status }}
+          </ion-badge>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="content-block">
+          <div class="block-label">Description</div>
+          <p class="description-text">{{ currentItem.description }}</p>
+        </div>
+
+        <div class="content-block contact-card">
+          <div class="block-label">Contact Person / Post</div>
+          <p class="contact-text">{{ currentItem.contact }}</p>
+        </div>
+
+        <div class="content-block">
+          <div class="block-label">Reported Coordinates</div>
+          <p class="coords-text">{{ currentItem.lat.toFixed(5) }}, {{ currentItem.lng.toFixed(5) }}</p>
+        </div>
+
+        @if (currentItem.status === 'Open') {
+        <div class="action-wrapper">
+          <ion-button expand="block" color="success" (click)="markClaimed()" [disabled]="claiming()" class="claim-btn">
+            <ion-icon slot="start" name="checkmark-circle"></ion-icon>
+            {{ claiming() ? 'Updating Status...' : 'Mark as Claimed' }}
+          </ion-button>
+        </div>
+        }
+      </ion-card-content>
+    </ion-card>
+
+    <div class="map-card">
+      <div class="map-header">
+        <span>Pinned Location on Campus</span>
+      </div>
+      <div id="detail-map"></div>
     </div>
+  </div>
   } @else {
-    <div class="not-found-container">
-      <p>Item not found or loading...</p>
-    </div>
+  <div class="not-found-container">
+    <p>Item not found or loading...</p>
+  </div>
   }
 </ion-content>

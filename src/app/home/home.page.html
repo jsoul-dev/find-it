@@ -29,27 +29,25 @@
   </div>
 
   @if (loading()) {
-    <div class="state-container">
-      <ion-spinner name="crescent" color="primary"></ion-spinner>
-      <p class="state-text">Loading campus items...</p>
-    </div>
+  <div class="state-container">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p class="state-text">Loading campus items...</p>
+  </div>
   } @else if (error()) {
-    <div class="state-container error-box">
-      <p class="error-text">{{ error() }}</p>
-      <ion-button fill="outline" color="primary" (click)="retry()">
-        Retry Connection
-      </ion-button>
-    </div>
+  <div class="state-container error-box">
+    <p class="error-text">{{ error() }}</p>
+    <ion-button fill="outline" color="primary" (click)="retry()"> Retry Connection </ion-button>
+  </div>
   } @else if (filtered().length === 0) {
-    <div class="state-container empty-box">
-      <p class="state-text">No items match the selected filter.</p>
-    </div>
+  <div class="state-container empty-box">
+    <p class="state-text">No items match the selected filter.</p>
+  </div>
   } @else {
-    <div class="items-list-wrapper">
-      @for (item of filtered(); track item.id) {
-        <app-item-card [item]="item" (open)="goTo($event)" />
-      }
-    </div>
+  <div class="items-list-wrapper">
+    @for (item of filtered(); track item.id) {
+    <app-item-card [item]="item" (open)="goTo($event)" />
+    }
+  </div>
   }
 
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
