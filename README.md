@@ -27,7 +27,7 @@ The application provides a centralized, real-time registry for reporting and dis
 - **Real-Time Search & Segmented Filtering:** Debounced keyword searchbar (`ion-searchbar`) with instant filtering across names, descriptions, and places, paired with segment buttons.
 - **Visual Verification & Cloud CDN Hosting:** Capture photos via Capacitor Camera (`@capacitor/camera`) and automatically upload them to ImgBB CDN for direct HTTPS image URLs, backed by local device storage cache.
 - **Geographic Pinning (Geolocation):** Pin exact locations where items were lost or found using the "Locate Me" button or by tapping directly on the map.
-- **Item Details and Resolution:** View item details, contact details, attached photos, and an interactive pin. Campus guards and owners can mark open items as "Claimed" via HTTP PUT.
+- **Item Details & Lifecycle Management:** View item details, contact details, attached photos, and an interactive pin. Campus guards and owners can mark open items as "Claimed" via HTTP PUT or delete obsolete/duplicate reports via HTTP DELETE with confirmation dialogs.
 - **Purposeful Haptic Feedback:** Tactile confirmation on successful submissions, input validation warnings for empty fields, and error notifications on network or hardware failures.
 
 ---
