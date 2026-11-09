@@ -1,4 +1,10 @@
-import { Component, AfterViewInit, inject } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  inject,
+  signal,
+  computed,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import {
   IonHeader,
@@ -8,6 +14,9 @@ import {
   IonFab,
   IonFabButton,
   IonIcon,
+  IonSegment,
+  IonSegmentButton,
+  IonLabel,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { add } from 'ionicons/icons';
@@ -28,6 +37,9 @@ import { ItemCardComponent } from '../components/item-card/item-card.component';
     IonFab,
     IonFabButton,
     IonIcon,
+    IonSegment,
+    IonSegmentButton,
+    IonLabel,
     ItemCardComponent,
   ],
 })
@@ -37,6 +49,19 @@ export class HomePage implements AfterViewInit {
   private map!: L.Map;
 
   items = this.itemService.items;
+  filter = signal<'All' | 'Lost' | 'Found' | 'Claimed'>('All');
+
+  filtered = computed(() => {
+    const currentFilter = this.filter();
+    const all = this.items();
+    if (currentFilter === 'All') {
+      return all;
+    }
+    if (currentFilter === 'Claimed') {
+      return all.filter((i) => i.status === 'Claimed');
+    }
+    return all.filter((i) => i.type === currentFilter && i.status !== 'Claimed');
+  });
 
   constructor() {
     addIcons({ add });
@@ -53,6 +78,13 @@ export class HomePage implements AfterViewInit {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
     setTimeout(() => this.map.invalidateSize(), 200);
+  }
+
+  setFilter(event: CustomEvent): void {
+    const value = event.detail.value as 'All' | 'Lost' | 'Found' | 'Claimed';
+    if (value) {
+      this.filter.set(value);
+    }
   }
 
   goTo(id: string): void {
