@@ -60,7 +60,9 @@ The application is structured into three primary views:
 ```
 
 ### 1. Home / Items List (`/home`)
-- **Top Campus Overview Map:** Renders an interactive OpenStreetMap view centered on the NEUST Sumacab Campus coordinates (`15.44825, 120.93922`).
+- **Campus Statistics & Metrics Dashboard:** A 4-card interactive statistics overview summarizing **Total Items**, **Lost Items**, **Found Items**, and **Claimed Belongings** using reactive Angular `computed()` signals. Each card doubles as an instant filter toggle with full keyboard navigation and high-contrast color indicators.
+- **Collapsible Campus Map:** OpenStreetMap view centered on NEUST Sumacab Campus (`15.44825, 120.93922`), toggleable via a "View Map / Hide Map" button to keep the primary screen uncluttered and performant.
+- **Visual Section Divider:** A prominent structural divider separating the high-level metrics dashboard from the live feed of reported belongings, complete with an icon and live count badge (`X items`).
 - **Segmented Filter Bar:** An `ion-segment` allows instantaneous switching between **All**, **Lost**, **Found**, and **Claimed** records.
 - **Live Item Cards:** Reusable `ItemCardComponent` displays item photo thumbnails, item name, description, contact details, a colored type badge (`Lost` in red, `Found` in green), and status indicator (`Open` or `Claimed`).
 - **System States:** Clear UI feedback displaying an `ion-spinner` during initial data load, an empty state message when no items match a selected filter, and an error card with a **Retry** button if network connectivity fails.
@@ -121,25 +123,30 @@ flowchart TD
 
 ### Core Code Snippets & Implementation Details
 
-#### 1. Camera Capture and Compression (`post-item.page.ts`)
+#### 1. Camera Capture & Canvas Compression (`post-item.page.ts`)
+To adhere to MockAPI.io's strict ~100KB request body payload limitation while preventing HTTP 413 `Payload Too Large` errors, captured photos are downscaled on an off-screen HTML5 Canvas down to a maximum width of 300px at 0.45 JPEG quality (~10–15KB):
+
 ```typescript
 async takePhoto(): Promise<void> {
   try {
     const image = await Camera.getPhoto({
-      quality: 35,
+      quality: 40,
       allowEditing: false,
       resultType: CameraResultType.DataUrl,
       source: CameraSource.Prompt,
       width: 400,
     });
     if (image.dataUrl) {
-      this.photo.set(image.dataUrl);
+      const compressed = await this.compressPhoto(image.dataUrl, 300, 0.45);
+      this.photo.set(compressed);
     }
   } catch {
     this.formError.set('Camera was cancelled or unavailable.');
   }
 }
 ```
+
+Furthermore, if the cloud REST API ever rejects a submission with HTTP 413, FindIt executes an automatic local-first fallback: the full photo is preserved locally in `localStorage` under the user's session, and the record is posted with clear text metadata to guarantee student reports are never lost.
 
 #### 2. Hybrid Local-First Photo Persistence (`services/item.ts`)
 Caches full photos locally by ID while synchronizing compact payloads to the REST backend:
@@ -240,9 +247,12 @@ In addition to physical device verification, an automated Playwright test suite 
 - **Execution Result:** 3/3 tests passing (9.1 seconds execution time).
 
 ### Limitations and Usability Issues
-1. **Unauthenticated Public API:** MockAPI.io endpoints are publicly writable. Any client knowing the URL can theoretically issue POST/PUT requests.
-2. **Online Map Tile Caching:** OpenStreetMap tiles require active internet access. When offline, uncached regions show a blank grid.
-3. **Payload Compression Trade-off:** To conform to MockAPI request body limits, photos are compressed to 400px width. While suitable for identification, very fine text on small lost items may require higher resolution.
+1. **MockAPI.io 100KB Request Body Limit & Image Compression:** MockAPI.io free tier enforces a strict ~100KB aggregate payload limit per POST/PUT request. Because raw mobile camera photos typically span 2MB to 8MB, direct Base64 encoding triggers an HTTP 413 (Payload Too Large) error. To ensure dependable cloud synchronization, the app applies client-side HTML5 Canvas compression down to 300px width at 0.45 JPEG quality (~10–15KB). While sufficient for visual verification on mobile screens, fine text (e.g. tiny student ID numbers or serial codes) is compressed. In production, this would be superseded by dedicated object storage (Firebase Storage / AWS S3) storing only lightweight image URLs in the database.
+2. **Duplicate Entry Policies:**
+   - *Submission Concurrency Prevention:* Accidental double-posts from rapid taps are fully prevented on the client side via the `[disabled]="submitting()"` signal lock on the submit button.
+   - *Domain Duplicate Tolerance:* MockAPI provides no unique database constraints, and FindIt deliberately allows similar item titles without server deduplication. In an active campus environment, multiple students may lose or find identical items (e.g., standard Casio calculators, black umbrellas, or PE uniforms) in separate instances, meaning strict title deduplication would incorrectly reject genuine reports.
+3. **Unauthenticated Public API:** MockAPI.io endpoints are publicly writable. Any client knowing the URL can theoretically issue POST/PUT requests.
+4. **Online Map Tile Caching:** OpenStreetMap tiles require active internet access. When offline, uncached regions show a blank grid.
 
 ### Proposed Improvements (CO4)
 1. **Dedicated Cloud Storage (Firebase Storage / AWS S3):** Upload original high-resolution photos to dedicated cloud storage buckets and save immutable image URLs to the database.

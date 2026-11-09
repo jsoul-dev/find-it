@@ -17,7 +17,15 @@ import {
   IonButton,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { add, layersOutline, searchOutline, giftOutline, checkmarkCircleOutline, mapOutline } from 'ionicons/icons';
+import {
+  add,
+  layersOutline,
+  searchOutline,
+  giftOutline,
+  checkmarkCircleOutline,
+  mapOutline,
+  listOutline,
+} from 'ionicons/icons';
 import * as L from 'leaflet';
 
 import { ItemCardComponent } from '../components/item-card/item-card.component';
@@ -80,6 +88,7 @@ export class HomePage implements OnInit, AfterViewInit {
       'gift-outline': giftOutline,
       'checkmark-circle-outline': checkmarkCircleOutline,
       'map-outline': mapOutline,
+      'list-outline': listOutline,
     });
   }
 
@@ -128,6 +137,9 @@ export class HomePage implements OnInit, AfterViewInit {
   }
 
   goTo(id: string): void {
+    if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
     this.router.navigate(['/item-detail', id]);
   }
 }
