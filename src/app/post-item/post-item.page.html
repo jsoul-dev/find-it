@@ -11,43 +11,44 @@
   <div class="form-container">
     <div class="form-card">
       <div class="section-title">Item Information</div>
-      <ion-item lines="none" class="custom-item">
-        <ion-select [(ngModel)]="type" label="Report Category" labelPlacement="stacked" fill="outline">
-          <ion-select-option value="Lost">Lost Item</ion-select-option>
-          <ion-select-option value="Found">Found Item</ion-select-option>
-        </ion-select>
-      </ion-item>
+      <ion-select
+        [(ngModel)]="type"
+        label="Report Category"
+        labelPlacement="stacked"
+        fill="outline"
+        class="form-control"
+      >
+        <ion-select-option value="Lost">Lost Item</ion-select-option>
+        <ion-select-option value="Found">Found Item</ion-select-option>
+      </ion-select>
 
-      <ion-item lines="none" class="custom-item">
-        <ion-input
-          [(ngModel)]="name"
-          label="Item Name"
-          labelPlacement="stacked"
-          fill="outline"
-          placeholder="e.g. Scientific Calculator"
-        ></ion-input>
-      </ion-item>
+      <ion-input
+        [(ngModel)]="name"
+        label="Item Name"
+        labelPlacement="stacked"
+        fill="outline"
+        placeholder="e.g. Scientific Calculator"
+        class="form-control"
+      ></ion-input>
 
-      <ion-item lines="none" class="custom-item">
-        <ion-textarea
-          [(ngModel)]="description"
-          label="Item Description"
-          labelPlacement="stacked"
-          fill="outline"
-          placeholder="Provide specific identifiers (color, scratches, stickers, where left)..."
-          [autoGrow]="true"
-        ></ion-textarea>
-      </ion-item>
+      <ion-textarea
+        [(ngModel)]="description"
+        label="Item Description"
+        labelPlacement="stacked"
+        fill="outline"
+        placeholder="Provide specific identifiers (color, scratches, stickers, where left)..."
+        [autoGrow]="true"
+        class="form-control"
+      ></ion-textarea>
 
-      <ion-item lines="none" class="custom-item">
-        <ion-input
-          [(ngModel)]="contact"
-          label="Your Contact Details"
-          labelPlacement="stacked"
-          fill="outline"
-          placeholder="e.g. 0917-000-0000 or Guard Post"
-        ></ion-input>
-      </ion-item>
+      <ion-input
+        [(ngModel)]="contact"
+        label="Your Contact Details"
+        labelPlacement="stacked"
+        fill="outline"
+        placeholder="e.g. 0917-000-0000 or Guard Post"
+        class="form-control"
+      ></ion-input>
     </div>
 
     <div class="form-card">
