@@ -35,7 +35,7 @@ In academic environments such as the NEUST campus, lost and found personal belon
 ### Proposed Solution
 **FindIt** is a focused, cross-platform mobile application developed with the **Ionic Framework**, **Angular Standalone**, and **Capacitor**. It provides a centralized, real-time Lost & Found registry connected to a cloud-hosted REST API:
 - **Instant Reporting with Geographic Pinning:** Users post reports with descriptions, contact info, and an exact GPS pin via Capacitor Geolocation and an interactive Leaflet map.
-- **Visual Verification via Camera Integration:** Users can snap or attach photos using **Capacitor Camera** (`@capacitor/camera`). Photos are saved with a **hybrid local-first architecture**: high-resolution images are preserved on the local device via `localStorage`, while an optimized thumbnail is synced to the REST API for remote viewing.
+- **Visual Verification & Cloud Image Hosting:** Users snap or attach photos using **Capacitor Camera** (`@capacitor/camera`). Images are automatically uploaded to the **ImgBB Cloud CDN**, returning a direct, secure HTTPS image URL saved directly in the MockAPI record. The local device also caches the photo in `localStorage` for instant offline and low-bandwidth viewing.
 - **Shared Live Registry:** All reports synchronize with an HTTPS cloud REST API (`MockAPI.io`), allowing immediate discovery across the entire campus.
 - **Real-Time Keyword Search & Filtering:** Reports can be searched by keyword (name, description, location) via an integrated `ion-searchbar` and filtered instantaneously by category (**Lost**, **Found**, **Claimed**) using reactive Angular signals.
 - **Tactile Feedback:** Capacitor Haptics provides purposeful physical vibrations indicating operational success, input validation warnings, and network/hardware errors.
@@ -125,30 +125,25 @@ flowchart TD
 
 ### Core Code Snippets & Implementation Details
 
-#### 1. Camera Capture & Canvas Compression (`post-item.page.ts`)
-To adhere to MockAPI.io's strict ~100KB request body payload limitation while preventing HTTP 413 `Payload Too Large` errors, captured photos are downscaled on an off-screen HTML5 Canvas down to a maximum width of 300px at 0.45 JPEG quality (~10–15KB):
+#### 1. Camera Capture & Cloud CDN Upload (`ItemService` & `post-item.page.ts`)
+To eliminate payload bottlenecks and avoid base64 data overhead on MockAPI, captured photos are resized to a crisp 800px width and uploaded directly to the ImgBB Cloud CDN API, returning a permanent direct HTTPS URL:
 
 ```typescript
-async takePhoto(): Promise<void> {
-  try {
-    const image = await Camera.getPhoto({
-      quality: 40,
-      allowEditing: false,
-      resultType: CameraResultType.DataUrl,
-      source: CameraSource.Prompt,
-      width: 400,
-    });
-    if (image.dataUrl) {
-      const compressed = await this.compressPhoto(image.dataUrl, 300, 0.45);
-      this.photo.set(compressed);
-    }
-  } catch {
-    this.formError.set('Camera was cancelled or unavailable.');
-  }
+uploadImage(dataUrl: string): Observable<string> {
+  const cleanBase64 = dataUrl.replace(/^data:image\/\w+;base64,/, '');
+  const formData = new FormData();
+  formData.append('image', cleanBase64);
+
+  return this.http
+    .post<{ data: { url: string }; success: boolean }>(
+      `${environment.imgbbUrl}?key=${environment.imgbbApiKey}`,
+      formData,
+    )
+    .pipe(map((res) => res.data.url));
 }
 ```
 
-Furthermore, if the cloud REST API ever rejects a submission with HTTP 413, FindIt executes an automatic local-first fallback: the full photo is preserved locally in `localStorage` under the user's session, and the record is posted with clear text metadata to guarantee student reports are never lost.
+The resulting direct image URL (e.g. `https://i.ibb.co/xyz/image.jpg`, ~35 bytes) is saved in MockAPI, enabling full cross-device visual fidelity while preserving full resolution and bypassing MockAPI's 100KB JSON payload ceiling.
 
 #### 2. Hybrid Local-First Photo Persistence (`services/item.ts`)
 Caches full photos locally by ID while synchronizing compact payloads to the REST backend:
@@ -250,7 +245,7 @@ In addition to physical device verification, an automated Playwright test suite 
 - **Execution Result:** 4/4 automated E2E tests passing.
 
 ### Limitations and Usability Issues
-1. **MockAPI.io 100KB Request Body Limit & Image Compression:** MockAPI.io free tier enforces a strict ~100KB aggregate payload limit per POST/PUT request. Because raw mobile camera photos typically span 2MB to 8MB, direct Base64 encoding triggers an HTTP 413 (Payload Too Large) error. To ensure dependable cloud synchronization, the app applies client-side HTML5 Canvas compression down to 300px width at 0.45 JPEG quality (~10–15KB). While sufficient for visual verification on mobile screens, fine text (e.g. tiny student ID numbers or serial codes) is compressed. In production, this would be superseded by dedicated object storage (Firebase Storage / AWS S3) storing only lightweight image URLs in the database.
+1. **External Image Hosting API Dependency:** Photos are hosted via the ImgBB Cloud CDN, storing only lightweight direct URLs on MockAPI. While this completely eliminates MockAPI's 100KB payload limit and provides high-resolution cross-device viewing, image availability depends on third-party API availability. FindIt incorporates a graceful fallback: if the cloud image host is temporarily unreachable, the item metadata still posts cleanly and the photo is preserved locally in `localStorage`.
 2. **Duplicate Entry Policies:**
    - *Submission Concurrency Prevention:* Accidental double-posts from rapid taps are fully prevented on the client side via the `[disabled]="submitting()"` signal lock on the submit button.
    - *Domain Duplicate Tolerance:* MockAPI provides no unique database constraints, and FindIt deliberately allows similar item titles without server deduplication. In an active campus environment, multiple students may lose or find identical items (e.g., standard Casio calculators, black umbrellas, or PE uniforms) in separate instances, meaning strict title deduplication would incorrectly reject genuine reports.

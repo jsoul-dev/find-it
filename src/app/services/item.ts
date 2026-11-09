@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Haptics, NotificationType } from '@capacitor/haptics';
 import type { Observable } from 'rxjs';
+import { map } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import type { Item, NewItem } from '../models/item';
@@ -40,6 +41,19 @@ export class ItemService {
 
   addItem(newItem: NewItem): Observable<Item> {
     return this.http.post<Item>(this.url, newItem);
+  }
+
+  uploadImage(dataUrl: string): Observable<string> {
+    const cleanBase64 = dataUrl.replace(/^data:image\/\w+;base64,/, '');
+    const formData = new FormData();
+    formData.append('image', cleanBase64);
+
+    return this.http
+      .post<{ data: { url: string }; success: boolean }>(
+        `${environment.imgbbUrl}?key=${environment.imgbbApiKey}`,
+        formData,
+      )
+      .pipe(map((res) => res.data.url));
   }
 
   markClaimed(item: Item): Observable<Item> {

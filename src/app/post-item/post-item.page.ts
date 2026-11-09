@@ -22,6 +22,7 @@ import {
 import { addIcons } from 'ionicons';
 import { locate, camera, trash } from 'ionicons/icons';
 import * as L from 'leaflet';
+import { firstValueFrom } from 'rxjs';
 
 import { ItemService } from '../services/item';
 
@@ -110,7 +111,7 @@ export class PostItemPage implements AfterViewInit {
     }
   }
 
-  private compressPhoto(dataUrl: string, maxWidth = 300, quality = 0.45): Promise<string> {
+  private compressPhoto(dataUrl: string, maxWidth = 800, quality = 0.75): Promise<string> {
     return new Promise((resolve) => {
       const img = new Image();
       img.onload = () => {
@@ -134,14 +135,14 @@ export class PostItemPage implements AfterViewInit {
   async takePhoto(): Promise<void> {
     try {
       const image = await Camera.getPhoto({
-        quality: 30,
+        quality: 75,
         allowEditing: false,
         resultType: CameraResultType.DataUrl,
         source: CameraSource.Prompt,
-        width: 300,
+        width: 800,
       });
       if (image.dataUrl) {
-        const compressed = await this.compressPhoto(image.dataUrl, 300, 0.45);
+        const compressed = await this.compressPhoto(image.dataUrl, 800, 0.75);
         this.photo.set(compressed);
       }
     } catch {
@@ -167,7 +168,17 @@ export class PostItemPage implements AfterViewInit {
     this.formError.set('');
     this.submitting.set(true);
 
-    const photoData = this.photo();
+    const localPhoto = this.photo();
+    let cloudPhotoUrl: string | undefined = undefined;
+
+    if (localPhoto && localPhoto.startsWith('data:image')) {
+      try {
+        cloudPhotoUrl = await firstValueFrom(this.itemService.uploadImage(localPhoto));
+      } catch (uploadErr) {
+        console.warn('ImgBB upload fallback:', uploadErr);
+        cloudPhotoUrl = localPhoto;
+      }
+    }
 
     this.itemService
       .addItem({
@@ -178,12 +189,12 @@ export class PostItemPage implements AfterViewInit {
         lat: this.lat()!,
         lng: this.lng()!,
         status: 'Open',
-        photo: photoData ?? undefined,
+        photo: cloudPhotoUrl,
       })
       .subscribe({
         next: async (created) => {
-          if (photoData && created?.id) {
-            this.itemService.saveLocalPhoto(created.id, photoData);
+          if (localPhoto && created?.id) {
+            this.itemService.saveLocalPhoto(created.id, localPhoto);
           }
           try {
             await Haptics.notification({ type: NotificationType.Success });
@@ -195,7 +206,7 @@ export class PostItemPage implements AfterViewInit {
           this.router.navigate(['/home']);
         },
         error: async (err) => {
-          if (photoData && (err?.status === 413 || err?.status === 400)) {
+          if (cloudPhotoUrl && (err?.status === 413 || err?.status === 400)) {
             this.itemService
               .addItem({
                 type: this.type,
@@ -208,8 +219,8 @@ export class PostItemPage implements AfterViewInit {
               })
               .subscribe({
                 next: async (created) => {
-                  if (created?.id) {
-                    this.itemService.saveLocalPhoto(created.id, photoData);
+                  if (localPhoto && created?.id) {
+                    this.itemService.saveLocalPhoto(created.id, localPhoto);
                   }
                   try {
                     await Haptics.notification({ type: NotificationType.Success });

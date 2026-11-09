@@ -107,11 +107,11 @@
 > - We maintain `items`, `loading`, and `error` signals.
 > - In `fetchItems()`, we issue an `http.get<Item[]>()`. When the response arrives, `items.set(data)` automatically notifies all computed signals, updating the Home screen cards and filter counts with zero boilerplate.
 >
-> ### Snippet 3: Hybrid Local-First Photo Persistence
-> Third is our photo storage architecture. Cloud mock endpoints often reject large base64 camera payloads. To solve this, we implemented a **hybrid local-first architecture**:
-> - When a photo is captured, we compress an optimized thumbnail to sync over the REST API so all devices see the image preview.
-> - Simultaneously, we save the full photo directly on the device using `localStorage` keyed by item ID. 
-> - When opening the Item Detail screen, the app first checks local storage for the crisp original photo, falling back to the cloud thumbnail if accessed from another device.
+> ### Snippet 3: Cloud Image CDN & Direct URL Synchronization
+> Third is our photo storage architecture. Rather than overloading MockAPI with large base64 camera strings, we integrate the **ImgBB Cloud CDN API**:
+> - When a photo is captured, it is scaled to 800px and uploaded directly to the CDN, returning a permanent HTTPS direct URL.
+> - We save only this lightweight direct link to MockAPI, guaranteeing fast cross-device visual verification without size limits.
+> - Simultaneously, the device preserves the photo in `localStorage` for instant offline and low-bandwidth display.
 >
 > Now, `[Speaker 4 Name]` will cover our testing results, limitations, and AI disclosure."
 
