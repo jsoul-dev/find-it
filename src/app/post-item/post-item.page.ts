@@ -142,8 +142,14 @@ export class PostItemPage implements AfterViewInit {
         width: 800,
       });
       if (image.dataUrl) {
+        const approxBytes = (image.dataUrl.length * 3) / 4;
+        if (approxBytes > 10 * 1024 * 1024) {
+          this.formError.set('Selected image exceeds the 10MB limit. Please choose a smaller photo.');
+          return;
+        }
         const compressed = await this.compressPhoto(image.dataUrl, 800, 0.75);
         this.photo.set(compressed);
+        this.formError.set('');
       }
     } catch {
       this.formError.set('Camera was cancelled or unavailable.');

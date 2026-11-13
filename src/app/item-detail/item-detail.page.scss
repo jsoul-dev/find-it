@@ -71,7 +71,7 @@
 }
 
 .contact-card {
-  background: rgba(var(--ion-color-light-rgb), 0.6);
+  background: rgba(var(--ion-color-medium-rgb), 0.12);
   padding: 10px 14px;
   border-radius: 8px;
 }
@@ -79,7 +79,7 @@
 .contact-text {
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--ion-color-step-700, #1f2937);
+  color: var(--ion-text-color);
   margin: 0;
 }
 
@@ -122,11 +122,11 @@
   padding: 10px 14px;
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--ion-color-step-600, #4b5563);
+  color: var(--ion-text-color);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  background: rgba(var(--ion-color-light-rgb), 0.7);
-  border-bottom: 1px solid rgba(var(--ion-color-medium-rgb), 0.1);
+  background: rgba(var(--ion-color-medium-rgb), 0.08);
+  border-bottom: 1px solid rgba(var(--ion-color-medium-rgb), 0.15);
 }
 
 #detail-map {

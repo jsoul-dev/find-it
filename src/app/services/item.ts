@@ -45,6 +45,11 @@ export class ItemService {
 
   uploadImage(dataUrl: string): Observable<string> {
     const cleanBase64 = dataUrl.replace(/^data:image\/\w+;base64,/, '');
+    const approxBytes = (cleanBase64.length * 3) / 4;
+    if (approxBytes > 10 * 1024 * 1024) {
+      throw new Error('Image size exceeds 10MB limit.');
+    }
+
     const formData = new FormData();
     formData.append('image', cleanBase64);
 
