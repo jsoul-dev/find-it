@@ -78,3 +78,7 @@ Thumbs.db
 # Environments
 src/environments/environment.ts
 src/environments/environment.prod.ts
+
+# Documentation drafts (ignore markdown reports/scripts, permit PDF uploads)
+docs/findit-final-report.md
+docs/findit-video-script.md
