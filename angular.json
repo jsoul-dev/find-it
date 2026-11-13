@@ -73,6 +73,11 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "prebundle": {
+              "exclude": ["@ionic/pwa-elements"]
+            }
+          },
           "configurations": {
             "production": {
               "buildTarget": "app:build:production"
